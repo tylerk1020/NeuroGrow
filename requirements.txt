@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+openai
+python-dotenv
+
+# Authentication
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt==3.2.2
+
+# PostgreSQL (comment this out if staying on SQLite for now)
+psycopg2-binary
