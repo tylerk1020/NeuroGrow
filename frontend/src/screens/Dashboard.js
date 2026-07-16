@@ -10,7 +10,13 @@ export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
     fetch(`${API}/users-list`, { headers })
       .then(r => r.json())
-      .then(data => { setUsers(data.users || []); setLoading(false); })
+      .then(data => {
+        const list = data.users || [];
+        setUsers(list);
+        // Auto-select if there's only one profile
+        if (list.length === 1 && !selectedUser) setSelectedUser(list[0]);
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, []);
 

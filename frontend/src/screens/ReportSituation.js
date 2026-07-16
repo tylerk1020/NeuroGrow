@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import API from '../config';
 
 const LOADING_MESSAGES = [
@@ -19,7 +19,10 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
   });
   const [loading, setLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState(0);
+  const [showColdStart, setShowColdStart] = useState(false);
+  const [showOptional, setShowOptional] = useState(false);
   const [error, setError] = useState('');
+  const coldTimerRef = useRef(null);
 
   const firstName = selectedUser?.name?.split(' ')[0];
 
@@ -28,13 +31,16 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
   const handleSubmit = async () => {
     if (!form.situation) { setError('Please describe what is happening.'); return; }
     setLoading(true);
+    setShowColdStart(false);
     setError('');
     setLoadingMsg(0);
 
-    // Cycle loading messages while waiting
     const interval = setInterval(() => {
       setLoadingMsg(m => (m + 1) % LOADING_MESSAGES.length);
     }, 1400);
+
+    // Show cold start warning if request takes more than 8 seconds
+    coldTimerRef.current = setTimeout(() => setShowColdStart(true), 8000);
 
     try {
       const res = await fetch(`${API}/get-response`, {
@@ -52,10 +58,12 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
       });
       const data = await res.json();
       clearInterval(interval);
+      clearTimeout(coldTimerRef.current);
       setLastResponse(data);
       navigate('response');
     } catch (e) {
       clearInterval(interval);
+      clearTimeout(coldTimerRef.current);
       setError('Failed to get a response. Make sure your backend is running.');
     }
     setLoading(false);
@@ -67,6 +75,11 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
         <div className="spinner" />
         <div className="loading-text">Analyzing {firstName}'s profile</div>
         <div className="loading-subtext">{LOADING_MESSAGES[loadingMsg]}</div>
+        {showColdStart && (
+          <div className="cold-start-notice">
+            The server is waking up — this can take up to 60 seconds on first use. Your request is queued and will complete automatically.
+          </div>
+        )}
       </div>
     );
   }
@@ -85,6 +98,7 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
 
         {error && <div className="alert-box">{error}</div>}
 
+        {/* Required: situation description */}
         <div className="form-group">
           <label className="form-label">Describe the Situation <span style={{ color: '#c53030' }}>*</span></label>
           <textarea
@@ -94,20 +108,11 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
             value={form.situation}
             onChange={handleChange}
             style={{ minHeight: 110 }}
+            autoFocus
           />
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Possible Trigger</label>
-          <input
-            className="form-input"
-            name="trigger"
-            placeholder="What may have caused this? e.g. loud noise, missed snack, unexpected change"
-            value={form.trigger}
-            onChange={handleChange}
-          />
-        </div>
-
+        {/* Severity — always visible, already has a default */}
         <div className="form-group">
           <label className="form-label">Severity</label>
           <div className="severity-options">
@@ -123,40 +128,64 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
           </div>
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Current Location</label>
-          <input
-            className="form-input"
-            name="current_location"
-            placeholder="Where are you right now? e.g. school hallway, grocery store, car, home"
-            value={form.current_location}
-            onChange={handleChange}
-          />
-        </div>
+        {/* Optional fields toggle */}
+        {!showOptional ? (
+          <button
+            className="btn btn-ghost btn-full"
+            style={{ marginTop: 4, marginBottom: 4, color: '#64748b', fontSize: 13 }}
+            onClick={() => setShowOptional(true)}
+          >
+            + Add more detail (location, trigger, items available)
+          </button>
+        ) : (
+          <>
+            <div className="form-group">
+              <label className="form-label">Possible Trigger</label>
+              <input
+                className="form-input"
+                name="trigger"
+                placeholder="What may have caused this? e.g. loud noise, missed snack, unexpected change"
+                value={form.trigger}
+                onChange={handleChange}
+              />
+            </div>
 
-        <div className="form-group">
-          <label className="form-label">Items Available Right Now</label>
-          <input
-            className="form-input"
-            name="available_items"
-            placeholder={`What do you have with you? e.g. Ellie, weighted blanket — or leave blank if nothing is available`}
-            value={form.available_items}
-            onChange={handleChange}
-          />
-        </div>
+            <div className="form-group">
+              <label className="form-label">Current Location</label>
+              <input
+                className="form-input"
+                name="current_location"
+                placeholder="Where are you right now? e.g. school hallway, grocery store, car, home"
+                value={form.current_location}
+                onChange={handleChange}
+              />
+            </div>
 
-        <div className="form-group">
-          <label className="form-label">Additional Context</label>
-          <textarea
-            className="form-textarea"
-            name="additional_context"
-            placeholder="Anything else — who else is present, time of day, recent events, how she's been today"
-            value={form.additional_context}
-            onChange={handleChange}
-          />
-        </div>
+            <div className="form-group">
+              <label className="form-label">Items Available Right Now</label>
+              <input
+                className="form-input"
+                name="available_items"
+                placeholder={`What do you have with you? e.g. Ellie, weighted blanket — or leave blank if nothing is available`}
+                value={form.available_items}
+                onChange={handleChange}
+              />
+            </div>
 
-        <button className="btn btn-primary btn-full btn-lg" onClick={handleSubmit} style={{ marginTop: 4 }}>
+            <div className="form-group">
+              <label className="form-label">Additional Context</label>
+              <textarea
+                className="form-textarea"
+                name="additional_context"
+                placeholder="Anything else — who else is present, time of day, recent events, how she's been today"
+                value={form.additional_context}
+                onChange={handleChange}
+              />
+            </div>
+          </>
+        )}
+
+        <button className="btn btn-primary btn-full btn-lg" onClick={handleSubmit} style={{ marginTop: 12 }}>
           Get Support
         </button>
       </div>

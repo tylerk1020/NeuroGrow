@@ -14,9 +14,10 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
   const [ratings, setRatings] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [shareState, setShareState] = useState('idle'); // idle | copied | shared
 
   const firstName = selectedUser?.name?.split(' ')[0];
+  const canShare = typeof navigator !== 'undefined' && !!navigator.share;
 
   if (!response) { navigate('dashboard'); return null; }
 
@@ -45,7 +46,7 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
     setSubmitting(false);
   };
 
-  const handleCopy = () => {
+  const buildShareText = () => {
     const lines = [
       `Support response for ${firstName}`,
       `Priority: ${(response.priority || 'medium').toUpperCase()}`,
@@ -60,10 +61,28 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
     if (response.caregiver_note) {
       lines.push('', response.caregiver_note);
     }
-    navigator.clipboard.writeText(lines.join('\n'));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2200);
+    return lines.join('\n');
   };
+
+  const handleShare = async () => {
+    const text = buildShareText();
+    if (canShare) {
+      try {
+        await navigator.share({ title: `NeuroGrow — Support for ${firstName}`, text });
+        setShareState('shared');
+        setTimeout(() => setShareState('idle'), 2200);
+      } catch (e) {
+        // User cancelled — no-op
+      }
+    } else {
+      navigator.clipboard.writeText(text);
+      setShareState('copied');
+      setTimeout(() => setShareState('idle'), 2200);
+    }
+  };
+
+  const shareLabel = shareState === 'copied' ? 'Copied' : shareState === 'shared' ? 'Sent' : canShare ? 'Share' : 'Copy';
+  const shareActive = shareState !== 'idle';
 
   return (
     <div>
@@ -71,13 +90,20 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
         ← Back to Dashboard
       </div>
 
-      {/* Priority + copy row */}
+      {/* Priority + share row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
         <div className={`priority-badge ${priorityClass}`}>
           {priorityLabel}
         </div>
-        <button className={`copy-btn ${copied ? 'copied' : ''}`} onClick={handleCopy}>
-          {copied ? 'Copied' : 'Copy'}
+        <button className={`copy-btn ${shareActive ? 'copied' : ''}`} onClick={handleShare}>
+          {canShare && shareState === 'idle' && (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight: 2 }}>
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+              <polyline points="16 6 12 2 8 6"/>
+              <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+          )}
+          {shareLabel}
         </button>
       </div>
 

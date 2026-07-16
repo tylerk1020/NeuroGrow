@@ -54,8 +54,8 @@ export default function Login({ onLogin }) {
       <div style={{ width: '100%', maxWidth: 400 }}>
 
         {/* Wordmark */}
-        <div style={{ textAlign: 'center', marginBottom: 36 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <div style={{
               width: 36,
               height: 36,
@@ -72,9 +72,35 @@ export default function Login({ onLogin }) {
               NeuroGrow
             </span>
           </div>
-          <div style={{ fontSize: 14, color: '#64748b', lineHeight: 1.5 }}>
+          <div style={{ fontSize: 15, color: '#334155', fontWeight: 500, marginBottom: 6 }}>
             Real-time AI support for caregivers
           </div>
+          <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6, maxWidth: 320, margin: '0 auto' }}>
+            Describe what's happening during a meltdown or crisis moment and get immediate, personalized strategies — built around your loved one's profile.
+          </div>
+        </div>
+
+        {/* Feature pills */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: 8,
+          flexWrap: 'wrap',
+          marginBottom: 24,
+        }}>
+          {['Autism', 'Dup15q', 'Rett Syndrome', 'Cerebral Palsy', '& more'].map(label => (
+            <span key={label} style={{
+              fontSize: 11,
+              fontWeight: 600,
+              padding: '3px 10px',
+              borderRadius: 20,
+              background: '#e6f5f2',
+              color: '#065f52',
+              border: '1px solid #99e6d8',
+            }}>
+              {label}
+            </span>
+          ))}
         </div>
 
         <div className="card" style={{ padding: 28 }}>

@@ -10,6 +10,7 @@ const SEVERITY_COLORS = {
 export default function History({ selectedUser, navigate }) {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState({});
 
   const firstName = selectedUser?.name?.split(' ')[0];
 
@@ -20,6 +21,8 @@ export default function History({ selectedUser, navigate }) {
       .then(data => { setHistory(data.sessions || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, [selectedUser]);
+
+  const toggleExpand = (id) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
@@ -37,7 +40,7 @@ export default function History({ selectedUser, navigate }) {
       <div className="card">
         <div className="card-title">{firstName}'s Session History</div>
         <div className="card-subtitle">
-          Past situations and the strategies that were recommended. Rate sessions to improve future responses.
+          Past situations and the strategies that were recommended. Tap any session to see the full response.
         </div>
       </div>
 
@@ -65,15 +68,30 @@ export default function History({ selectedUser, navigate }) {
           const sev = session.severity?.toLowerCase() || 'medium';
           const colors = SEVERITY_COLORS[sev] || SEVERITY_COLORS.medium;
           const hasFeedback = session.feedback?.some(f => f.overall_helpful !== null);
+          const isExpanded = !!expanded[session.id ?? i];
+          const actions = session.actions_given || [];
+          const previewActions = isExpanded ? actions : actions.slice(0, 2);
+          const hasMore = actions.length > 2;
+
           return (
-            <div key={i} className="history-item">
+            <div
+              key={session.id ?? i}
+              className="history-item"
+              style={{ cursor: 'pointer' }}
+              onClick={() => toggleExpand(session.id ?? i)}
+            >
               <div className="history-header">
                 <div className="history-situation">
                   {session.situation?.length > 80
                     ? session.situation.slice(0, 80) + '...'
                     : session.situation}
                 </div>
-                <div className="history-date">{formatDate(session.created_at)}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
+                  <div className="history-date">{formatDate(session.created_at)}</div>
+                  <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 500 }}>
+                    {isExpanded ? '▲ collapse' : '▼ expand'}
+                  </div>
+                </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
@@ -100,18 +118,35 @@ export default function History({ selectedUser, navigate }) {
               </div>
 
               <div className="history-actions">
-                {session.actions_given?.slice(0, 2).map((a, j) => (
-                  <div key={j} style={{ marginBottom: 2 }}>
+                {previewActions.map((a, j) => (
+                  <div key={j} style={{ marginBottom: 4 }}>
                     <span style={{ color: '#0a9c85', fontWeight: 600, marginRight: 5 }}>{j + 1}.</span>
                     {a}
                   </div>
                 ))}
-                {session.actions_given?.length > 2 && (
+                {!isExpanded && hasMore && (
                   <div style={{ color: '#94a3b8', fontSize: 12, marginTop: 4 }}>
-                    +{session.actions_given.length - 2} more steps
+                    +{actions.length - 2} more steps — tap to expand
                   </div>
                 )}
               </div>
+
+              {/* Full expanded view */}
+              {isExpanded && session.caregiver_note && (
+                <div style={{
+                  marginTop: 12,
+                  padding: '12px 14px',
+                  background: 'linear-gradient(135deg, #e6f5f2 0%, #f0fbf9 100%)',
+                  borderLeft: '3px solid #0a9c85',
+                  borderRadius: 8,
+                  fontSize: 13,
+                  color: '#065f52',
+                  fontStyle: 'italic',
+                  lineHeight: 1.6,
+                }}>
+                  {session.caregiver_note}
+                </div>
+              )}
 
               {hasFeedback && (
                 <div style={{

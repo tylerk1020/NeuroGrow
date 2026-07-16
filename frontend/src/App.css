@@ -918,6 +918,31 @@ body {
 /* -------------------------
    QUICK START BANNER
    ------------------------- */
+/* -------------------------
+   COLD START NOTICE
+   ------------------------- */
+.cold-start-notice {
+  max-width: 300px;
+  background: var(--amber-light);
+  border: 1px solid var(--amber-border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--amber);
+  line-height: 1.6;
+  text-align: center;
+  margin-top: 8px;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------------
+   QUICK START BANNER
+   ------------------------- */
 .quick-start-banner {
   background: var(--blue-light);
   border: 1px solid #bfdbfe;
