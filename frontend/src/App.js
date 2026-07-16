@@ -5,10 +5,11 @@ import ReportSituation from './screens/ReportSituation';
 import ViewResponse from './screens/ViewResponse';
 import History from './screens/History';
 import Login from './screens/Login';
+import Landing from './screens/Landing';
 import './App.css';
 
 export default function App() {
-  const [screen, setScreen] = useState('dashboard');
+  const [screen, setScreen] = useState('landing');
   const [selectedUser, setSelectedUser] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
   const [caregiver, setCaregiver] = useState(null);
@@ -20,6 +21,7 @@ export default function App() {
     if (token && saved) {
       try {
         setCaregiver(JSON.parse(saved));
+        setScreen('dashboard');
       } catch (e) {
         // Corrupted data — clear it
         localStorage.removeItem('ng_token');
@@ -40,12 +42,16 @@ export default function App() {
     localStorage.removeItem('ng_caregiver');
     setCaregiver(null);
     setSelectedUser(null);
-    setScreen('login');
+    setScreen('landing');
   };
 
+  // Show landing page for new visitors
+  if (screen === 'landing') {
+    return <Landing navigate={navigate} />;
+  }
+
   // Show login screen if not logged in
-  // (users can still skip login — Login.js has a "continue without account" link)
-  if (!caregiver && screen !== 'dashboard') {
+  if (!caregiver && screen === 'login') {
     return <Login onLogin={handleLogin} />;
   }
 
