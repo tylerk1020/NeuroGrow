@@ -183,27 +183,94 @@ export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {users.map(user => (
-              <div
-                key={user.id}
-                className={`user-card ${selectedUser?.id === user.id ? 'selected' : ''}`}
-                onClick={() => setSelectedUser(user)}
-                style={{ marginBottom: 0 }}
-              >
-                <div className="user-avatar">{user.name[0]}</div>
-                <div className="user-info">
-                  <div className="user-name">{user.name}</div>
-                  <div className="user-disorder">{user.disorder}</div>
+            {users.map(user => {
+              const isSelected = selectedUser?.id === user.id;
+              return (
+                <div
+                  key={user.id}
+                  onClick={() => setSelectedUser(user)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 13,
+                    padding: '14px 16px',
+                    background: isSelected
+                      ? 'linear-gradient(135deg, rgba(0,212,180,0.06) 0%, rgba(10,156,133,0.04) 100%)'
+                      : 'white',
+                    borderRadius: 14,
+                    border: `1.5px solid ${isSelected ? 'rgba(0,212,180,0.35)' : '#e2e8f0'}`,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
+                    boxShadow: isSelected
+                      ? '0 0 20px rgba(0,212,180,0.12), 0 2px 8px rgba(15,31,61,0.06)'
+                      : '0 1px 3px rgba(15,31,61,0.04)',
+                    position: 'relative',
+                  }}
+                >
+                  {/* Left accent bar when selected */}
+                  {isSelected && (
+                    <div style={{
+                      position: 'absolute', left: 0, top: '20%', bottom: '20%',
+                      width: 3, borderRadius: '0 3px 3px 0',
+                      background: 'linear-gradient(to bottom, #00d4b4, #0a9c85)',
+                      boxShadow: '0 0 8px rgba(0,212,180,0.5)',
+                    }} />
+                  )}
+
+                  {/* Avatar */}
+                  <div style={{
+                    width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
+                    background: isSelected
+                      ? 'linear-gradient(135deg, #00d4b4, #009e8a)'
+                      : 'linear-gradient(135deg, #0f1f3d, #1a3260)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: isSelected ? '#041a14' : 'white',
+                    fontWeight: 700, fontSize: 17,
+                    boxShadow: isSelected
+                      ? '0 0 16px rgba(0,212,180,0.45)'
+                      : '0 2px 8px rgba(15,31,61,0.2)',
+                    transition: 'all 0.2s',
+                  }}>
+                    {user.name[0]}
+                  </div>
+
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{
+                      fontWeight: 600, fontSize: 14,
+                      color: isSelected ? '#0f1f3d' : '#1e293b',
+                      marginBottom: 4,
+                    }}>
+                      {user.name}
+                    </div>
+                    <div style={{
+                      display: 'inline-block',
+                      fontSize: 11, fontWeight: 600,
+                      padding: '2px 9px', borderRadius: 20,
+                      background: isSelected ? 'rgba(0,212,180,0.12)' : '#f1f5f9',
+                      color: isSelected ? '#065f52' : '#64748b',
+                      border: isSelected ? '1px solid rgba(0,212,180,0.25)' : '1px solid #e2e8f0',
+                      transition: 'all 0.2s',
+                    }}>
+                      {user.disorder}
+                    </div>
+                  </div>
+
+                  {/* Right indicator */}
+                  {isSelected ? (
+                    <div style={{
+                      width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
+                      background: 'linear-gradient(135deg, #0a9c85, #087a65)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'white', fontSize: 11, fontWeight: 700,
+                      boxShadow: '0 2px 8px rgba(10,156,133,0.4)',
+                    }}>✓</div>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="2">
+                      <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                  )}
                 </div>
-                {selectedUser?.id === user.id ? (
-                  <div className="user-check">✓</div>
-                ) : (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" strokeWidth="2">
-                    <polyline points="9 18 15 12 9 6"/>
-                  </svg>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
