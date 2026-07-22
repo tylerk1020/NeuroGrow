@@ -12,7 +12,7 @@ const SEVERITY_OPTIONS = [
   {
     id: 'low',
     label: 'Low',
-    icon: '🟢',
+    iconColor: '#0a9c85',
     desc: 'Early signs',
     activeBg: '#e6f5f2',
     activeBorder: '#0a9c85',
@@ -22,7 +22,7 @@ const SEVERITY_OPTIONS = [
   {
     id: 'medium',
     label: 'Medium',
-    icon: '🟡',
+    iconColor: '#d97706',
     desc: 'Escalating',
     activeBg: '#fffbeb',
     activeBorder: '#d97706',
@@ -32,7 +32,7 @@ const SEVERITY_OPTIONS = [
   {
     id: 'high',
     label: 'High',
-    icon: '🔴',
+    iconColor: '#e11d48',
     desc: 'Crisis',
     activeBg: '#fff1f2',
     activeBorder: '#e11d48',
@@ -248,7 +248,14 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
                         : '0 1px 3px rgba(15,31,61,0.04)',
                     }}
                   >
-                    <div style={{ fontSize: 22, marginBottom: 6, lineHeight: 1 }}>{s.icon}</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
+                      <div style={{
+                        width: 20, height: 20, borderRadius: '50%',
+                        background: active ? s.iconColor : '#e2e8f0',
+                        transition: 'background 0.18s',
+                        boxShadow: active ? `0 0 8px ${s.iconColor}80` : 'none',
+                      }} />
+                    </div>
                     <div style={{
                       fontWeight: 700, fontSize: 13, letterSpacing: '-0.1px',
                       color: active ? s.activeColor : '#334155',

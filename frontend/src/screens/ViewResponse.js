@@ -4,44 +4,71 @@ import API from '../config';
 const PRIORITY_CONFIG = {
   high: {
     label: 'High Priority',
-    emoji: '🚨',
     gradient: 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)',
-    glow: 'rgba(220,38,38,0.25)',
+    glow: 'rgba(185,28,28,0.22)',
     dot: '#ef4444',
   },
   'medium-high': {
     label: 'Medium-High',
-    emoji: '⚠️',
     gradient: 'linear-gradient(135deg, #92400e 0%, #78350f 100%)',
-    glow: 'rgba(217,119,6,0.2)',
+    glow: 'rgba(180,83,9,0.18)',
     dot: '#f59e0b',
   },
   medium: {
     label: 'Medium Priority',
-    emoji: '💙',
-    gradient: 'linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)',
-    glow: 'rgba(37,99,235,0.2)',
-    dot: '#3b82f6',
+    gradient: 'linear-gradient(135deg, #1e3a8a 0%, #1e3270 100%)',
+    glow: 'rgba(30,58,138,0.18)',
+    dot: '#60a5fa',
   },
   low: {
     label: 'Low Priority',
-    emoji: '✅',
-    gradient: 'linear-gradient(135deg, #065f52 0%, #0a4a3f 100%)',
-    glow: 'rgba(10,156,133,0.2)',
-    dot: '#0a9c85',
+    gradient: 'linear-gradient(135deg, #065f52 0%, #044a3f 100%)',
+    glow: 'rgba(6,95,82,0.18)',
+    dot: '#34d399',
   },
   unknown: {
     label: 'Response Ready',
-    emoji: '💭',
-    gradient: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)',
-    glow: 'rgba(71,85,105,0.2)',
-    dot: '#64748b',
+    gradient: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+    glow: 'rgba(30,41,59,0.18)',
+    dot: '#94a3b8',
   },
 };
 
+// SVG icon for each priority level — no emoji
+function PriorityIcon({ priority, size = 22 }) {
+  const s = { width: size, height: size, flexShrink: 0 };
+  if (priority === 'high') return (
+    <svg style={s} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+  );
+  if (priority === 'medium-high') return (
+    <svg style={s} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+  );
+  if (priority === 'low') return (
+    <svg style={s} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+  );
+  return (
+    <svg style={s} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+  );
+}
+
 export default function ViewResponse({ response, selectedUser, navigate }) {
-  const [overall, setOverall] = useState(null);
-  const [ratings, setRatings] = useState({});
+  const [overall, setOverall] = useState(null); // 1 = helpful, 0 = not helpful
+  const [ratings, setRatings] = useState({});   // strategy -> 5 (worked) or 1 (didn't)
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [shareState, setShareState] = useState('idle');
@@ -53,8 +80,8 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
 
   const pc = PRIORITY_CONFIG[response.priority] || PRIORITY_CONFIG.unknown;
 
-  const handleStarClick = (strategy, rating) =>
-    setRatings({ ...ratings, [strategy]: rating });
+  const handleStepRating = (strategy, val) =>
+    setRatings(prev => ({ ...prev, [strategy]: val }));
 
   const handleSubmitFeedback = async () => {
     setSubmitting(true);
@@ -70,15 +97,13 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
         }),
       });
       setSubmitted(true);
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
     setSubmitting(false);
   };
 
   const buildShareText = () => {
     const lines = [
-      `Support response for ${firstName}`,
+      `NeuroGrow — Support for ${firstName}`,
       `Priority: ${pc.label}`,
       '',
       'Immediate Actions:',
@@ -99,7 +124,7 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
         await navigator.share({ title: `NeuroGrow — Support for ${firstName}`, text });
         setShareState('shared');
         setTimeout(() => setShareState('idle'), 2200);
-      } catch (e) { /* user cancelled */ }
+      } catch (e) { /* cancelled */ }
     } else {
       navigator.clipboard.writeText(text);
       setShareState('copied');
@@ -107,244 +132,276 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
     }
   };
 
-  const shareLabel = shareState === 'copied' ? '✓ Copied' : shareState === 'shared' ? '✓ Sent' : canShare ? 'Share' : 'Copy';
+  const shareLabel = shareState === 'copied' ? 'Copied' : shareState === 'shared' ? 'Sent' : canShare ? 'Share' : 'Copy';
 
   return (
     <div>
-      <div className="nav-back" onClick={() => navigate('dashboard')}>← Back to Dashboard</div>
+      <div className="nav-back" onClick={() => navigate('dashboard')}>← Back</div>
 
-      {/* ══ PRIORITY HERO CARD ══ */}
+      {/* ── PRIORITY HEADER ── */}
       <div style={{
-        borderRadius: 20, overflow: 'hidden', marginBottom: 14,
-        boxShadow: `0 0 40px ${pc.glow}, 0 8px 32px rgba(0,0,0,0.15)`,
+        borderRadius: 18,
+        overflow: 'hidden',
+        marginBottom: 12,
+        boxShadow: `0 0 32px ${pc.glow}, 0 6px 24px rgba(0,0,0,0.14)`,
       }}>
-        {/* Colored gradient header */}
         <div style={{
           background: pc.gradient,
-          padding: '22px 22px 18px',
+          padding: '20px 22px',
           position: 'relative', overflow: 'hidden',
         }}>
-          {/* Background glow orb */}
           <div style={{
-            position: 'absolute', right: -30, top: -30,
-            width: 120, height: 120, borderRadius: '50%',
-            background: 'rgba(255,255,255,0.06)',
+            position: 'absolute', right: -24, top: -24,
+            width: 100, height: 100, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.05)',
             pointerEvents: 'none',
           }} />
 
-          <div style={{
-            display: 'flex', alignItems: 'flex-start',
-            justifyContent: 'space-between', gap: 12,
-            position: 'relative',
-          }}>
-            <div>
-              <div style={{
-                fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
-                letterSpacing: '1.2px', color: 'rgba(255,255,255,0.5)',
-                marginBottom: 6,
-              }}>
-                AI Response
-              </div>
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 9,
-              }}>
-                <div style={{
-                  width: 8, height: 8, borderRadius: '50%',
-                  background: pc.dot,
-                  boxShadow: `0 0 10px ${pc.dot}`,
-                  animation: 'pulse 2s ease-in-out infinite',
-                }} />
-                <span style={{
-                  color: 'white', fontSize: 20, fontWeight: 800,
-                  letterSpacing: '-0.4px',
-                }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, position: 'relative' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <PriorityIcon priority={response.priority} size={22} />
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(255,255,255,0.5)', marginBottom: 3 }}>
+                  AI Response
+                </div>
+                <div style={{ color: 'white', fontSize: 18, fontWeight: 800, letterSpacing: '-0.3px' }}>
                   {pc.label}
-                </span>
+                </div>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ fontSize: 28, lineHeight: 1 }}>{pc.emoji}</div>
-              {/* Share button */}
-              <button
-                onClick={handleShare}
-                style={{
-                  background: 'rgba(255,255,255,0.12)',
-                  border: '1px solid rgba(255,255,255,0.2)',
-                  borderRadius: 8, color: 'rgba(255,255,255,0.85)',
-                  fontSize: 12, fontWeight: 600, padding: '6px 12px',
-                  cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                  transition: 'all 0.15s',
-                  flexShrink: 0,
-                }}
-              >
-                {shareLabel}
-              </button>
-            </div>
+            <button onClick={handleShare} style={{
+              background: 'rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255,255,255,0.18)',
+              borderRadius: 8, color: 'rgba(255,255,255,0.8)',
+              fontSize: 12, fontWeight: 600, padding: '7px 14px',
+              cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+              display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0,
+            }}>
+              {shareState !== 'idle' ? (
+                <>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  {shareLabel}
+                </>
+              ) : (
+                <>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                    <polyline points="16 6 12 2 8 6"/>
+                    <line x1="12" y1="2" x2="12" y2="15"/>
+                  </svg>
+                  {shareLabel}
+                </>
+              )}
+            </button>
           </div>
         </div>
 
-        {/* Caregiver note — inside the card, below the header */}
+        {/* Caregiver note */}
         {response.caregiver_note && (
           <div style={{
             background: 'white',
-            padding: '16px 22px',
-            borderTop: '1px solid rgba(0,0,0,0.06)',
-            fontSize: 14,
-            color: '#1e293b',
+            padding: '15px 22px',
+            borderTop: '1px solid rgba(0,0,0,0.05)',
+            fontSize: 13.5,
+            color: '#334155',
             fontStyle: 'italic',
             fontFamily: 'var(--font-serif)',
-            lineHeight: 1.7,
+            lineHeight: 1.75,
           }}>
             {response.caregiver_note}
           </div>
         )}
       </div>
 
-      {/* ══ IMMEDIATE ACTIONS ══ */}
-      <div className="card">
-        <div className="section-label" style={{ marginTop: 0 }}>Immediate Actions</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {/* ── ACTIONS + PRECAUTIONS + DISCLAIMER in one card ── */}
+      <div className="card" style={{ padding: '22px 22px' }}>
+
+        {/* Immediate actions */}
+        <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: 14 }}>
+          Immediate Actions
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginBottom: response.precautions?.length ? 22 : 0 }}>
           {response.immediate_actions?.map((action, i) => (
             <div
               key={i}
-              className="action-item"
               style={{
-                animation: 'fade-slide-up 0.35s ease both',
-                animationDelay: `${i * 60}ms`,
+                display: 'flex', alignItems: 'flex-start', gap: 13,
+                padding: '14px 16px',
+                background: '#f8fafc',
+                borderRadius: 12,
+                border: '1px solid #e8edf4',
+                fontSize: 14.5, lineHeight: 1.65, color: '#1e293b',
+                animation: 'fade-slide-up 0.32s ease both',
+                animationDelay: `${i * 55}ms`,
               }}
             >
-              <span className="action-number">{i + 1}</span>
+              <div style={{
+                minWidth: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                background: 'linear-gradient(135deg, #0a9c85, #087a65)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'white', fontSize: 12, fontWeight: 700,
+                boxShadow: '0 2px 8px rgba(10,156,133,0.3)',
+                marginTop: 1,
+              }}>
+                {i + 1}
+              </div>
               <span>{action}</span>
             </div>
           ))}
         </div>
+
+        {/* Precautions */}
+        {response.precautions?.length > 0 && (
+          <>
+            <div style={{ height: 1, background: '#f1f5f9', margin: '4px 0 18px' }} />
+            <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: 12 }}>
+              Watch For
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {response.precautions.map((p, i) => (
+                <div key={i} style={{
+                  display: 'flex', alignItems: 'flex-start', gap: 10,
+                  padding: '11px 14px',
+                  background: '#fffbeb',
+                  border: '1px solid #fde68a',
+                  borderRadius: 10,
+                  fontSize: 13, color: '#78350f', lineHeight: 1.6,
+                }}>
+                  <svg style={{ flexShrink: 0, marginTop: 2 }} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  {p}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Disclaimer */}
+        <div style={{
+          marginTop: 18,
+          fontSize: 11.5, color: '#94a3b8', lineHeight: 1.65,
+          borderTop: '1px solid #f1f5f9', paddingTop: 14,
+        }}>
+          {response.disclaimer}
+        </div>
       </div>
 
-      {/* ══ PRECAUTIONS ══ */}
-      {response.precautions?.length > 0 && (
-        <div className="card">
-          <div className="section-label" style={{ marginTop: 0 }}>Watch For</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-            {response.precautions.map((p, i) => (
-              <div key={i} className="precaution-item">{p}</div>
-            ))}
-          </div>
+      {/* ── FEEDBACK ── */}
+      <div className="card">
+        <div style={{ fontSize: 16, fontWeight: 700, color: '#0f1f3d', letterSpacing: '-0.2px', marginBottom: 3 }}>
+          How did it go?
         </div>
-      )}
-
-      {/* ══ DISCLAIMER ══ */}
-      <div className="disclaimer">{response.disclaimer}</div>
-
-      {/* ══ FEEDBACK CARD ══ */}
-      <div className="card" style={{ marginTop: 14 }}>
-        <div style={{ marginBottom: 2 }}>
-          <div style={{
-            fontSize: 18, fontWeight: 700, color: '#0f1f3d',
-            letterSpacing: '-0.3px', marginBottom: 4,
-          }}>
-            How did it go?
-          </div>
-          <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>
-            Rating each step helps {firstName}'s AI get smarter over time.
-          </div>
+        <div style={{ fontSize: 13, color: '#64748b', marginBottom: 20, lineHeight: 1.5 }}>
+          Your ratings help {firstName}'s AI improve over time.
         </div>
 
         {submitted ? (
           <div style={{
-            marginTop: 18, padding: '16px 20px',
+            padding: '16px 20px',
             background: 'linear-gradient(135deg, #e6f5f2, #f0fbf9)',
             border: '1px solid rgba(10,156,133,0.2)',
             borderRadius: 12, textAlign: 'center',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             fontSize: 14, fontWeight: 600, color: '#065f52',
           }}>
-            ✓ Feedback saved — thank you for helping the AI learn.
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Feedback saved — thank you.
           </div>
         ) : (
-          <div style={{ marginTop: 18 }}>
-
-            {/* Overall thumbs */}
-            <div style={{
-              fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
-              letterSpacing: '0.8px', color: '#94a3b8', marginBottom: 10,
-            }}>
-              Was this helpful overall?
+          <>
+            {/* Overall — text buttons, no emoji */}
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: '#94a3b8', marginBottom: 10 }}>
+              Was this response helpful overall?
             </div>
-            <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
+            <div style={{ display: 'flex', gap: 9, marginBottom: 26 }}>
               {[
-                { val: 1, icon: '👍', activeStyle: { background: '#e6f5f2', border: '2px solid #0a9c85', boxShadow: '0 4px 16px rgba(10,156,133,0.2)' } },
-                { val: 0, icon: '👎', activeStyle: { background: '#fff1f2', border: '2px solid #e11d48', boxShadow: '0 4px 16px rgba(225,29,72,0.15)' } },
-              ].map(({ val, icon, activeStyle }) => (
-                <button
-                  key={val}
-                  onClick={() => setOverall(val)}
-                  style={{
-                    flex: 1, padding: '14px 0',
-                    borderRadius: 12, cursor: 'pointer',
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: 26,
-                    border: '2px solid #e2e8f0',
-                    background: 'white',
-                    transition: 'all 0.18s',
-                    transform: overall === val ? 'scale(1.04)' : 'scale(1)',
-                    ...(overall === val ? activeStyle : {}),
-                  }}
-                >
-                  {icon}
-                </button>
-              ))}
+                {
+                  val: 1, label: 'Helpful',
+                  icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>,
+                  activeStyle: { background: '#e6f5f2', borderColor: '#0a9c85', color: '#065f52', boxShadow: '0 3px 12px rgba(10,156,133,0.18)' },
+                },
+                {
+                  val: 0, label: 'Not helpful',
+                  icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+                  activeStyle: { background: '#fff1f2', borderColor: '#e11d48', color: '#9f1239', boxShadow: '0 3px 12px rgba(225,29,72,0.12)' },
+                },
+              ].map(({ val, label, icon, activeStyle }) => {
+                const active = overall === val;
+                return (
+                  <button
+                    key={val}
+                    onClick={() => setOverall(val)}
+                    style={{
+                      flex: 1, padding: '12px 16px',
+                      borderRadius: 10,
+                      border: `1.5px solid ${active ? activeStyle.borderColor : '#e2e8f0'}`,
+                      background: active ? activeStyle.background : 'white',
+                      color: active ? activeStyle.color : '#64748b',
+                      cursor: 'pointer',
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: 13, fontWeight: 600,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+                      transition: 'all 0.18s',
+                      boxShadow: active ? activeStyle.boxShadow : '0 1px 3px rgba(15,31,61,0.04)',
+                      transform: active ? 'scale(1.02)' : 'scale(1)',
+                    }}
+                  >
+                    {icon}
+                    {label}
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Per-step ratings */}
-            <div style={{
-              fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
-              letterSpacing: '0.8px', color: '#94a3b8', marginBottom: 10,
-            }}>
-              Rate each step
+            {/* Per-step ratings — "Worked / Didn't work" pills */}
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: '#94a3b8', marginBottom: 12 }}>
+              Did each step help?
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 22 }}>
               {response.immediate_actions?.map((action, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex', alignItems: 'center',
-                    justifyContent: 'space-between', gap: 14,
-                    padding: '12px 0',
-                    borderBottom: i < response.immediate_actions.length - 1 ? '1px solid #f1f5f9' : 'none',
-                  }}
-                >
+                <div key={i}>
                   {/* Step text */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 9, flex: 1 }}>
-                    <div style={{
-                      minWidth: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-                      background: 'var(--teal-light)', color: 'var(--teal-text)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 10, fontWeight: 700,
-                    }}>
-                      {i + 1}
-                    </div>
-                    <span style={{ fontSize: 13, color: '#475569', lineHeight: 1.5 }}>
-                      {action.length > 80 ? action.slice(0, 80) + '…' : action}
-                    </span>
+                  <div style={{
+                    fontSize: 12.5, color: '#475569', lineHeight: 1.5,
+                    marginBottom: 7, paddingLeft: 2,
+                  }}>
+                    <span style={{ fontWeight: 600, color: '#0a9c85', marginRight: 5 }}>{i + 1}.</span>
+                    {action.length > 90 ? action.slice(0, 90) + '…' : action}
                   </div>
-
-                  {/* Stars */}
-                  <div style={{ display: 'flex', gap: 2, flexShrink: 0 }}>
-                    {[1, 2, 3, 4, 5].map(star => (
-                      <span
-                        key={star}
-                        onClick={() => handleStarClick(action, star)}
-                        style={{
-                          fontSize: 22, cursor: 'pointer', lineHeight: 1,
-                          color: (ratings[action] || 0) >= star ? '#f59e0b' : '#e2e8f0',
-                          transition: 'all 0.1s',
-                          transform: (ratings[action] || 0) >= star ? 'scale(1.15)' : 'scale(1)',
-                          display: 'inline-block',
-                        }}
-                      >
-                        ★
-                      </span>
-                    ))}
+                  {/* Worked / Didn't work */}
+                  <div style={{ display: 'flex', gap: 7 }}>
+                    {[
+                      { val: 5, label: 'Worked', activeColor: '#065f52', activeBg: '#e6f5f2', activeBorder: '#0a9c85' },
+                      { val: 3, label: 'Somewhat', activeColor: '#92400e', activeBg: '#fffbeb', activeBorder: '#d97706' },
+                      { val: 1, label: "Didn't work", activeColor: '#9f1239', activeBg: '#fff1f2', activeBorder: '#e11d48' },
+                    ].map(({ val, label, activeColor, activeBg, activeBorder }) => {
+                      const active = ratings[action] === val;
+                      return (
+                        <button
+                          key={val}
+                          onClick={() => handleStepRating(action, val)}
+                          style={{
+                            flex: 1,
+                            padding: '7px 4px',
+                            borderRadius: 8,
+                            border: `1.5px solid ${active ? activeBorder : '#e2e8f0'}`,
+                            background: active ? activeBg : '#f8fafc',
+                            color: active ? activeColor : '#94a3b8',
+                            cursor: 'pointer',
+                            fontFamily: 'Inter, sans-serif',
+                            fontSize: 11, fontWeight: 600,
+                            transition: 'all 0.15s',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
@@ -355,29 +412,28 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
               onClick={handleSubmitFeedback}
               disabled={submitting || overall === null}
               style={{
-                width: '100%', marginTop: 20,
-                padding: '14px 28px',
+                width: '100%', padding: '13px 28px',
                 background: overall === null
                   ? '#f1f5f9'
                   : 'linear-gradient(135deg, #0a9c85, #087a65)',
                 color: overall === null ? '#94a3b8' : 'white',
-                border: 'none', borderRadius: 12,
-                fontSize: 14, fontWeight: 600, cursor: overall === null ? 'not-allowed' : 'pointer',
+                border: 'none', borderRadius: 10,
+                fontSize: 14, fontWeight: 600,
+                cursor: overall === null ? 'not-allowed' : 'pointer',
                 fontFamily: 'Inter, sans-serif',
                 transition: 'all 0.2s',
-                boxShadow: overall === null ? 'none' : '0 0 24px rgba(10,156,133,0.3), 0 4px 12px rgba(10,156,133,0.15)',
+                boxShadow: overall === null ? 'none' : '0 0 22px rgba(10,156,133,0.28), 0 3px 10px rgba(10,156,133,0.15)',
               }}
             >
               {submitting ? 'Saving...' : 'Submit Feedback'}
             </button>
-          </div>
+          </>
         )}
       </div>
 
-      {/* Report another */}
       <button
         className="btn btn-outline btn-full"
-        style={{ marginTop: 8, marginBottom: 8 }}
+        style={{ marginTop: 6, marginBottom: 8 }}
         onClick={() => navigate('report')}
       >
         Report Another Situation
