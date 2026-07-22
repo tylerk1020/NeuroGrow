@@ -7,6 +7,7 @@ import History from './screens/History';
 import Login from './screens/Login';
 import Landing from './screens/Landing';
 import Manifesto from './screens/Manifesto';
+import BrainLogo from './components/BrainLogo';
 import './App.css';
 
 export default function App() {
@@ -65,12 +66,7 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <div className="logo" onClick={() => navigate('dashboard')} style={{ cursor: 'pointer' }}>
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill="#0a9c85"/>
-            <path d="M15 9H12.5C9.5 9 7.5 11.5 7.5 16C7.5 20.5 9.5 23 12.5 23H15V9Z" fill="white" opacity="0.93"/>
-            <path d="M17 9H19.5C22.5 9 24.5 11.5 24.5 16C24.5 20.5 22.5 23 19.5 23H17V9Z" fill="white" opacity="0.93"/>
-            <rect x="14.5" y="23" width="3" height="2.5" rx="1.2" fill="white" opacity="0.7"/>
-          </svg>
+          <BrainLogo size={32} color="white" />
           <span className="logo-text">NeuroVero</span>
         </div>
 

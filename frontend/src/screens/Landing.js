@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import BrainLogo from '../components/BrainLogo';
 
 const DEMOS = [
   {
@@ -147,12 +148,7 @@ export default function Landing({ navigate }) {
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             style={{ display: 'flex', alignItems: 'center', gap: 9, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
           >
-            <svg width="34" height="34" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="8" fill="#0a9c85"/>
-              <path d="M15 9H12.5C9.5 9 7.5 11.5 7.5 16C7.5 20.5 9.5 23 12.5 23H15V9Z" fill="white" opacity="0.93"/>
-              <path d="M17 9H19.5C22.5 9 24.5 11.5 24.5 16C24.5 20.5 22.5 23 19.5 23H17V9Z" fill="white" opacity="0.93"/>
-              <rect x="14.5" y="23" width="3" height="2.5" rx="1.2" fill="white" opacity="0.7"/>
-            </svg>
+            <BrainLogo size={32} color="white" />
             <span style={{ color: 'white', fontWeight: 700, fontSize: 17, letterSpacing: '-0.3px' }}>
               NeuroVero
             </span>
@@ -604,12 +600,7 @@ export default function Landing({ navigate }) {
         borderTop: '1px solid rgba(255,255,255,0.05)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9, marginBottom: 14 }}>
-          <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill="#0a9c85"/>
-            <path d="M15 9H12.5C9.5 9 7.5 11.5 7.5 16C7.5 20.5 9.5 23 12.5 23H15V9Z" fill="white" opacity="0.93"/>
-            <path d="M17 9H19.5C22.5 9 24.5 11.5 24.5 16C24.5 20.5 22.5 23 19.5 23H17V9Z" fill="white" opacity="0.93"/>
-            <rect x="14.5" y="23" width="3" height="2.5" rx="1.2" fill="white" opacity="0.7"/>
-          </svg>
+          <BrainLogo size={22} color="rgba(255,255,255,0.45)" />
           <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, fontWeight: 600 }}>NeuroVero</span>
         </div>
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.1px' }}>
