@@ -193,15 +193,15 @@ export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
                     display: 'flex', alignItems: 'center', gap: 13,
                     padding: '14px 16px',
                     background: isSelected
-                      ? 'linear-gradient(135deg, rgba(0,212,180,0.06) 0%, rgba(10,156,133,0.04) 100%)'
-                      : 'white',
+                      ? 'linear-gradient(135deg, rgba(0,212,180,0.09) 0%, rgba(10,156,133,0.05) 100%)'
+                      : '#111c2e',
                     borderRadius: 14,
-                    border: `1.5px solid ${isSelected ? 'rgba(0,212,180,0.35)' : '#e2e8f0'}`,
+                    border: `1.5px solid ${isSelected ? 'rgba(0,212,180,0.35)' : 'rgba(255,255,255,0.09)'}`,
                     cursor: 'pointer',
                     transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
                     boxShadow: isSelected
-                      ? '0 0 20px rgba(0,212,180,0.12), 0 2px 8px rgba(15,31,61,0.06)'
-                      : '0 1px 3px rgba(15,31,61,0.04)',
+                      ? '0 0 20px rgba(0,212,180,0.14), 0 2px 8px rgba(0,0,0,0.2)'
+                      : '0 1px 3px rgba(0,0,0,0.2)',
                     position: 'relative',
                   }}
                 >
@@ -236,7 +236,7 @@ export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
                       fontWeight: 600, fontSize: 14,
-                      color: isSelected ? '#0f1f3d' : '#1e293b',
+                      color: isSelected ? '#ffffff' : 'rgba(255,255,255,0.85)',
                       marginBottom: 4,
                     }}>
                       {user.name}
@@ -245,9 +245,9 @@ export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
                       display: 'inline-block',
                       fontSize: 11, fontWeight: 600,
                       padding: '2px 9px', borderRadius: 20,
-                      background: isSelected ? 'rgba(0,212,180,0.12)' : '#f1f5f9',
-                      color: isSelected ? '#065f52' : '#64748b',
-                      border: isSelected ? '1px solid rgba(0,212,180,0.25)' : '1px solid #e2e8f0',
+                      background: isSelected ? 'rgba(0,212,180,0.14)' : 'rgba(255,255,255,0.07)',
+                      color: isSelected ? '#4ecca3' : 'rgba(255,255,255,0.42)',
+                      border: isSelected ? '1px solid rgba(0,212,180,0.28)' : '1px solid rgba(255,255,255,0.09)',
                       transition: 'all 0.2s',
                     }}>
                       {user.disorder}

@@ -69,7 +69,7 @@ export default function Login({ onLogin }) {
               fontSize: 16,
             }}>N</div>
             <span style={{ fontSize: 22, fontWeight: 700, color: '#0f1f3d', letterSpacing: '-0.4px' }}>
-              NeuroGrow
+              NeuroVero
             </span>
           </div>
           <div style={{ fontSize: 15, color: '#334155', fontWeight: 500, marginBottom: 6 }}>

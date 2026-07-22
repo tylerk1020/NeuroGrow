@@ -60,7 +60,7 @@ export default function App() {
       <header className="app-header">
         <div className="logo">
           <span className="logo-mark">N</span>
-          <span className="logo-text">NeuroGrow</span>
+          <span className="logo-text">NeuroVero</span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>

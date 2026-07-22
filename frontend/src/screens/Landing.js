@@ -102,7 +102,7 @@ export default function Landing({ navigate }) {
             }}>N</div>
             <span style={{
               color: 'white', fontWeight: 700, fontSize: 17, letterSpacing: '-0.3px',
-            }}>NeuroGrow</span>
+            }}>NeuroVero</span>
           </div>
 
           <button
@@ -146,7 +146,7 @@ export default function Landing({ navigate }) {
 
           {/* MAIN HEADLINE */}
           <h1 className="hero-headline">
-            NeuroGrow
+            NeuroVero
           </h1>
 
           <div style={{ marginBottom: 30, marginTop: 4 }}>
@@ -423,7 +423,7 @@ export default function Landing({ navigate }) {
               The AI gets smarter with every session
             </div>
             <div style={{ fontSize: 13, color: '#0a7a68', lineHeight: 1.65 }}>
-              After each interaction, you rate what worked. NeuroGrow learns your loved one's patterns and builds those insights directly into every future response.
+              After each interaction, you rate what worked. NeuroVero learns your loved one's patterns and builds those insights directly into every future response.
             </div>
           </div>
 
