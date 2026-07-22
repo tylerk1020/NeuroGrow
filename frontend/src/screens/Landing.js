@@ -143,7 +143,10 @@ export default function Landing({ navigate }) {
           padding: '18px 24px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            style={{ display: 'flex', alignItems: 'center', gap: 9, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+          >
             <svg width="34" height="34" viewBox="0 0 32 32" fill="none">
               <rect width="32" height="32" rx="8" fill="#0a9c85"/>
               <path d="M15 9H12.5C9.5 9 7.5 11.5 7.5 16C7.5 20.5 9.5 23 12.5 23H15V9Z" fill="white" opacity="0.93"/>
@@ -153,11 +156,11 @@ export default function Landing({ navigate }) {
             <span style={{ color: 'white', fontWeight: 700, fontSize: 17, letterSpacing: '-0.3px' }}>
               NeuroVero
             </span>
-          </div>
+          </button>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <button onClick={() => scrollTo('how-it-works')} className="landing-nav-link">How it works</button>
-            <button onClick={() => scrollTo('manifesto')} className="landing-nav-link">Manifesto</button>
+            <button onClick={() => navigate('manifesto')} className="landing-nav-link">Manifesto</button>
             <a href="mailto:tylerkim1020@gmail.com" className="landing-nav-link" style={{ textDecoration: 'none' }}>Contact</a>
             <button
               onClick={() => navigate('login')}
@@ -564,43 +567,6 @@ export default function Landing({ navigate }) {
                   Profile information is tied to your account only — never shared or used to train AI models.
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* ─────────────────────────────────────
-              MANIFESTO
-          ───────────────────────────────────── */}
-          <div
-            id="manifesto"
-            className="reveal"
-            style={{ marginTop: 32, marginBottom: 40, scrollMarginTop: '20px', transitionDelay: '0.08s' }}
-          >
-            <div style={{
-              background: 'white', borderRadius: 16, border: '1px solid #e2e8f0',
-              padding: '40px 32px',
-              boxShadow: '0 4px 20px rgba(15,31,61,0.06)',
-            }}>
-              <div style={{
-                fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
-                letterSpacing: '2px', color: '#0a9c85', marginBottom: 16,
-                display: 'flex', alignItems: 'center', gap: 10,
-              }}>
-                <span style={{ color: 'rgba(10,156,133,0.35)' }}>—</span>
-                <span>Manifesto</span>
-              </div>
-              <h2 style={{
-                fontSize: 26, fontWeight: 700, color: '#0f1f3d',
-                letterSpacing: '-0.5px', marginBottom: 28, lineHeight: 1.25,
-                fontFamily: 'Lora, Georgia, serif',
-              }}>
-                Why NeuroVero exists.
-              </h2>
-              {/* Tyler — add your manifesto content here */}
-              <div style={{
-                minHeight: 80, borderTop: '1px dashed #e2e8f0', paddingTop: 24,
-                fontFamily: 'Lora, Georgia, serif',
-                fontSize: 15, color: '#475569', lineHeight: 1.9,
-              }} />
             </div>
           </div>
 

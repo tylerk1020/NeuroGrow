@@ -6,6 +6,7 @@ import ViewResponse from './screens/ViewResponse';
 import History from './screens/History';
 import Login from './screens/Login';
 import Landing from './screens/Landing';
+import Manifesto from './screens/Manifesto';
 import './App.css';
 
 export default function App() {
@@ -50,6 +51,11 @@ export default function App() {
     return <Landing navigate={navigate} />;
   }
 
+  // Public manifesto page
+  if (screen === 'manifesto') {
+    return <Manifesto navigate={navigate} />;
+  }
+
   // Show login screen if not logged in
   if (!caregiver && screen === 'login') {
     return <Login onLogin={handleLogin} />;
@@ -58,7 +64,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <div className="logo">
+        <div className="logo" onClick={() => navigate('dashboard')} style={{ cursor: 'pointer' }}>
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
             <rect width="32" height="32" rx="8" fill="#0a9c85"/>
             <path d="M15 9H12.5C9.5 9 7.5 11.5 7.5 16C7.5 20.5 9.5 23 12.5 23H15V9Z" fill="white" opacity="0.93"/>
