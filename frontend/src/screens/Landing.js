@@ -54,6 +54,8 @@ export default function Landing({ navigate }) {
     return () => clearInterval(t);
   }, []);
 
+  const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
   const handleTab = (i) => {
     setDemoIdx(i);
     setAnimKey(k => k + 1);
@@ -92,14 +94,20 @@ export default function Landing({ navigate }) {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-            <div style={{
-              width: 34, height: 34,
-              background: 'linear-gradient(135deg, #00d4b4 0%, #009e8a 100%)',
-              borderRadius: 10,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#041a14', fontWeight: 800, fontSize: 15,
-              boxShadow: '0 0 22px rgba(0,212,180,0.65)',
-            }}>N</div>
+            <svg width="34" height="34" viewBox="0 0 32 32" fill="none">
+              <line x1="16" y1="5" x2="26" y2="22.5" stroke="rgba(0,212,180,0.28)" strokeWidth="1.2" strokeLinecap="round"/>
+              <line x1="26" y1="22.5" x2="6" y2="22.5" stroke="rgba(0,212,180,0.28)" strokeWidth="1.2" strokeLinecap="round"/>
+              <line x1="6" y1="22.5" x2="16" y2="5" stroke="rgba(0,212,180,0.28)" strokeWidth="1.2" strokeLinecap="round"/>
+              <line x1="16" y1="5" x2="16" y2="15" stroke="rgba(0,212,180,0.7)" strokeWidth="1.4" strokeLinecap="round"/>
+              <line x1="26" y1="22.5" x2="16" y2="15" stroke="rgba(0,212,180,0.7)" strokeWidth="1.4" strokeLinecap="round"/>
+              <line x1="6" y1="22.5" x2="16" y2="15" stroke="rgba(0,212,180,0.7)" strokeWidth="1.4" strokeLinecap="round"/>
+              <circle cx="16" cy="5" r="2.2" fill="rgba(255,255,255,0.92)"/>
+              <circle cx="26" cy="22.5" r="2.2" fill="#00d4b4"/>
+              <circle cx="6" cy="22.5" r="2.2" fill="#00d4b4"/>
+              <circle cx="16" cy="15" r="5.5" fill="rgba(0,212,180,0.12)"/>
+              <circle cx="16" cy="15" r="3.5" fill="#0a9c85"/>
+              <circle cx="14.8" cy="13.8" r="1" fill="rgba(255,255,255,0.45)"/>
+            </svg>
             <span style={{
               color: 'white', fontWeight: 700, fontSize: 17, letterSpacing: '-0.3px',
             }}>NeuroVero</span>
@@ -232,7 +240,44 @@ export default function Landing({ navigate }) {
           LIGHT CONTENT SECTION
       ══════════════════════════════════════ */}
       <div style={{ background: '#f4f6f9' }}>
-        <div style={{ maxWidth: 600, margin: '0 auto', padding: '56px 20px 64px' }}>
+
+        {/* ── STICKY PAGE NAV ── */}
+        <div style={{
+          position: 'sticky', top: 0, zIndex: 40,
+          background: 'rgba(244,246,249,0.92)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          borderBottom: '1px solid rgba(15,31,61,0.07)',
+          display: 'flex', justifyContent: 'center', gap: 6,
+          padding: '11px 20px',
+        }}>
+          {[
+            { label: 'How It Works', id: 'how-it-works' },
+            { label: 'Manifesto', id: 'manifesto' },
+            { label: 'Contact', id: 'contact' },
+          ].map(({ label, id }) => (
+            <button
+              key={id}
+              onClick={() => scrollTo(id)}
+              style={{
+                padding: '6px 16px',
+                border: '1px solid #e2e8f0',
+                background: 'white',
+                borderRadius: 20,
+                fontSize: 12.5, fontWeight: 500,
+                color: '#334155',
+                cursor: 'pointer',
+                fontFamily: 'Inter, sans-serif',
+                transition: 'all 0.15s',
+                boxShadow: '0 1px 3px rgba(15,31,61,0.04)',
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ maxWidth: 600, margin: '0 auto', padding: '40px 20px 64px' }}>
 
           {/* Section header */}
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
@@ -377,11 +422,12 @@ export default function Landing({ navigate }) {
           </div>
 
           {/* How it works */}
-          <div style={{
+          <div id="how-it-works" style={{
             background: 'white', borderRadius: 16,
             border: '1px solid #e2e8f0',
             padding: '28px 24px', marginBottom: 16,
             boxShadow: '0 4px 20px rgba(15,31,61,0.06)',
+            scrollMarginTop: '58px',
           }}>
             <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: 20 }}>
               How it works
@@ -441,6 +487,85 @@ export default function Landing({ navigate }) {
                 Profile information is tied to your account and never shared or used to train AI models. It exists only to help you get better support.
               </div>
             </div>
+          </div>
+
+          {/* ── MANIFESTO ── */}
+          <div id="manifesto" style={{
+            background: 'white', borderRadius: 16,
+            border: '1px solid #e2e8f0',
+            padding: '40px 32px', marginBottom: 16,
+            boxShadow: '0 4px 20px rgba(15,31,61,0.06)',
+            scrollMarginTop: '58px',
+          }}>
+            <div style={{
+              fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
+              letterSpacing: '1.5px', color: '#0a9c85', marginBottom: 16,
+            }}>
+              Manifesto
+            </div>
+            <h2 style={{
+              fontSize: 26, fontWeight: 700, color: '#0f1f3d',
+              letterSpacing: '-0.5px', marginBottom: 28, lineHeight: 1.25,
+              fontFamily: 'Lora, Georgia, serif',
+            }}>
+              Why NeuroVero exists.
+            </h2>
+            {/* Tyler — add your manifesto content here */}
+            <div style={{
+              minHeight: 80,
+              borderTop: '1px dashed #e2e8f0',
+              paddingTop: 24,
+              fontFamily: 'Lora, Georgia, serif',
+              fontSize: 15, color: '#475569', lineHeight: 1.9,
+            }} />
+          </div>
+
+          {/* ── CONTACT ── */}
+          <div id="contact" style={{
+            background: 'linear-gradient(145deg, #0a1628 0%, #0f2040 60%, #0a1628 100%)',
+            borderRadius: 16,
+            border: '1px solid rgba(0,212,180,0.14)',
+            padding: '40px 32px', marginBottom: 36,
+            textAlign: 'center',
+            boxShadow: '0 0 40px rgba(0,212,180,0.06), 0 8px 32px rgba(0,0,0,0.18)',
+            scrollMarginTop: '58px',
+          }}>
+            <div style={{
+              fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
+              letterSpacing: '1.5px', color: 'rgba(255,255,255,0.3)', marginBottom: 14,
+            }}>
+              Contact
+            </div>
+            <div style={{
+              fontSize: 22, fontWeight: 700, color: 'white',
+              letterSpacing: '-0.4px', marginBottom: 8,
+            }}>
+              Get in touch.
+            </div>
+            <div style={{
+              fontSize: 13, color: 'rgba(255,255,255,0.42)', marginBottom: 28, lineHeight: 1.6,
+            }}>
+              Questions, feedback, or just want to say hi.
+            </div>
+            <a
+              href="mailto:tylerkim1020@gmail.com"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 9,
+                background: 'rgba(0,212,180,0.1)',
+                border: '1px solid rgba(0,212,180,0.25)',
+                borderRadius: 10,
+                padding: '13px 26px',
+                color: '#00d4b4', fontSize: 14, fontWeight: 600,
+                textDecoration: 'none', fontFamily: 'Inter, sans-serif',
+                letterSpacing: '-0.1px',
+              }}
+            >
+              tylerkim1020@gmail.com
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </a>
           </div>
 
           {/* Bottom CTA */}

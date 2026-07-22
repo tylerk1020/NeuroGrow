@@ -4,6 +4,7 @@ import API from '../config';
 export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [hoveredId, setHoveredId] = useState(null);
 
   // Pull caregiver name from localStorage
   const caregiverFirst = (() => {
@@ -189,19 +190,32 @@ export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
                 <div
                   key={user.id}
                   onClick={() => setSelectedUser(user)}
+                  onMouseEnter={() => setHoveredId(user.id)}
+                  onMouseLeave={() => setHoveredId(null)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 13,
                     padding: '14px 16px',
                     background: isSelected
                       ? 'linear-gradient(135deg, rgba(0,212,180,0.06) 0%, rgba(10,156,133,0.04) 100%)'
-                      : 'white',
+                      : hoveredId === user.id
+                        ? 'linear-gradient(135deg, rgba(0,212,180,0.03) 0%, rgba(10,156,133,0.02) 100%)'
+                        : 'white',
                     borderRadius: 14,
-                    border: `1.5px solid ${isSelected ? 'rgba(0,212,180,0.35)' : '#e2e8f0'}`,
+                    border: `1.5px solid ${
+                      isSelected
+                        ? 'rgba(0,212,180,0.35)'
+                        : hoveredId === user.id
+                          ? 'rgba(0,212,180,0.22)'
+                          : '#e2e8f0'
+                    }`,
                     cursor: 'pointer',
-                    transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
+                    transition: 'all 0.18s cubic-bezier(0.4,0,0.2,1)',
                     boxShadow: isSelected
                       ? '0 0 20px rgba(0,212,180,0.12), 0 2px 8px rgba(15,31,61,0.06)'
-                      : '0 1px 3px rgba(15,31,61,0.04)',
+                      : hoveredId === user.id
+                        ? '0 4px 18px rgba(10,156,133,0.1), 0 2px 8px rgba(15,31,61,0.06)'
+                        : '0 1px 3px rgba(15,31,61,0.04)',
+                    transform: hoveredId === user.id && !isSelected ? 'translateY(-1px)' : 'translateY(0)',
                     position: 'relative',
                   }}
                 >

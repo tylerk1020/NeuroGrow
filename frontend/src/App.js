@@ -59,7 +59,20 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <div className="logo">
-          <span className="logo-mark">N</span>
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <line x1="16" y1="5" x2="26" y2="22.5" stroke="rgba(0,212,180,0.28)" strokeWidth="1.2" strokeLinecap="round"/>
+            <line x1="26" y1="22.5" x2="6" y2="22.5" stroke="rgba(0,212,180,0.28)" strokeWidth="1.2" strokeLinecap="round"/>
+            <line x1="6" y1="22.5" x2="16" y2="5" stroke="rgba(0,212,180,0.28)" strokeWidth="1.2" strokeLinecap="round"/>
+            <line x1="16" y1="5" x2="16" y2="15" stroke="rgba(0,212,180,0.7)" strokeWidth="1.4" strokeLinecap="round"/>
+            <line x1="26" y1="22.5" x2="16" y2="15" stroke="rgba(0,212,180,0.7)" strokeWidth="1.4" strokeLinecap="round"/>
+            <line x1="6" y1="22.5" x2="16" y2="15" stroke="rgba(0,212,180,0.7)" strokeWidth="1.4" strokeLinecap="round"/>
+            <circle cx="16" cy="5" r="2.2" fill="rgba(255,255,255,0.92)"/>
+            <circle cx="26" cy="22.5" r="2.2" fill="#00d4b4"/>
+            <circle cx="6" cy="22.5" r="2.2" fill="#00d4b4"/>
+            <circle cx="16" cy="15" r="5.5" fill="rgba(0,212,180,0.12)"/>
+            <circle cx="16" cy="15" r="3.5" fill="#0a9c85"/>
+            <circle cx="14.8" cy="13.8" r="1" fill="rgba(255,255,255,0.45)"/>
+          </svg>
           <span className="logo-text">NeuroVero</span>
         </div>
 
