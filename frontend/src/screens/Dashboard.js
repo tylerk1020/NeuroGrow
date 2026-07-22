@@ -57,13 +57,14 @@ export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
       {/* Active profile + CTA hero card */}
       {selectedUser ? (
         <div style={{
-          background: 'linear-gradient(135deg, #0f1f3d 0%, #1a3464 100%)',
+          background: 'linear-gradient(145deg, #0a1628 0%, #0f2040 50%, #0a1628 100%)',
           borderRadius: 20,
           padding: '22px 22px 22px',
           marginBottom: 14,
-          boxShadow: '0 10px 40px rgba(15,31,61,0.22)',
+          boxShadow: '0 0 0 1px rgba(0,212,180,0.15), 0 0 40px rgba(0,212,180,0.08), 0 12px 48px rgba(0,0,0,0.35)',
           position: 'relative',
           overflow: 'hidden',
+          border: '1px solid rgba(0,212,180,0.18)',
         }}>
           {/* Background decoration */}
           <div style={{
