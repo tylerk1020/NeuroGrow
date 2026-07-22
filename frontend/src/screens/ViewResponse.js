@@ -200,11 +200,11 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
         {/* Caregiver note */}
         {response.caregiver_note && (
           <div style={{
-            background: 'rgba(255,255,255,0.04)',
+            background: 'white',
             padding: '15px 22px',
-            borderTop: '1px solid rgba(255,255,255,0.07)',
+            borderTop: '1px solid rgba(0,0,0,0.05)',
             fontSize: 13.5,
-            color: 'rgba(255,255,255,0.68)',
+            color: '#334155',
             fontStyle: 'italic',
             fontFamily: 'var(--font-serif)',
             lineHeight: 1.75,
@@ -228,10 +228,10 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
               style={{
                 display: 'flex', alignItems: 'flex-start', gap: 13,
                 padding: '14px 16px',
-                background: '#111c2e',
+                background: '#f8fafc',
                 borderRadius: 12,
-                border: '1px solid rgba(255,255,255,0.08)',
-                fontSize: 14.5, lineHeight: 1.65, color: 'rgba(255,255,255,0.85)',
+                border: '1px solid #e8edf4',
+                fontSize: 14.5, lineHeight: 1.65, color: '#1e293b',
                 animation: 'fade-slide-up 0.32s ease both',
                 animationDelay: `${i * 55}ms`,
               }}
@@ -263,12 +263,12 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
                 <div key={i} style={{
                   display: 'flex', alignItems: 'flex-start', gap: 10,
                   padding: '11px 14px',
-                  background: 'rgba(217,119,6,0.1)',
-                  border: '1px solid rgba(217,119,6,0.25)',
+                  background: '#fffbeb',
+                  border: '1px solid #fde68a',
                   borderRadius: 10,
-                  fontSize: 13, color: '#fcd34d', lineHeight: 1.6,
+                  fontSize: 13, color: '#78350f', lineHeight: 1.6,
                 }}>
-                  <svg style={{ flexShrink: 0, marginTop: 2 }} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg style={{ flexShrink: 0, marginTop: 2 }} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="12" y1="8" x2="12" y2="12"/>
                     <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -283,8 +283,8 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
         {/* Disclaimer */}
         <div style={{
           marginTop: 18,
-          fontSize: 11.5, color: 'rgba(255,255,255,0.32)', lineHeight: 1.65,
-          borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 14,
+          fontSize: 11.5, color: '#94a3b8', lineHeight: 1.65,
+          borderTop: '1px solid #f1f5f9', paddingTop: 14,
         }}>
           {response.disclaimer}
         </div>
@@ -292,21 +292,21 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
 
       {/* ── FEEDBACK ── */}
       <div className="card">
-        <div style={{ fontSize: 16, fontWeight: 700, color: '#ffffff', letterSpacing: '-0.2px', marginBottom: 3 }}>
+        <div style={{ fontSize: 16, fontWeight: 700, color: '#0f1f3d', letterSpacing: '-0.2px', marginBottom: 3 }}>
           How did it go?
         </div>
-        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.48)', marginBottom: 20, lineHeight: 1.5 }}>
+        <div style={{ fontSize: 13, color: '#64748b', marginBottom: 20, lineHeight: 1.5 }}>
           Your ratings help {firstName}'s AI improve over time.
         </div>
 
         {submitted ? (
           <div style={{
             padding: '16px 20px',
-            background: 'rgba(10,156,133,0.12)',
-            border: '1px solid rgba(10,156,133,0.25)',
+            background: 'linear-gradient(135deg, #e6f5f2, #f0fbf9)',
+            border: '1px solid rgba(10,156,133,0.2)',
             borderRadius: 12, textAlign: 'center',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            fontSize: 14, fontWeight: 600, color: '#4ecca3',
+            fontSize: 14, fontWeight: 600, color: '#065f52',
           }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             Feedback saved — thank you.
@@ -322,12 +322,12 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
                 {
                   val: 1, label: 'Helpful',
                   icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>,
-                  activeStyle: { background: 'rgba(10,156,133,0.18)', borderColor: '#0a9c85', color: '#4ecca3', boxShadow: '0 3px 12px rgba(10,156,133,0.2)' },
+                  activeStyle: { background: '#e6f5f2', borderColor: '#0a9c85', color: '#065f52', boxShadow: '0 3px 12px rgba(10,156,133,0.18)' },
                 },
                 {
                   val: 0, label: 'Not helpful',
                   icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-                  activeStyle: { background: 'rgba(225,29,72,0.15)', borderColor: '#e11d48', color: '#fca5a5', boxShadow: '0 3px 12px rgba(225,29,72,0.15)' },
+                  activeStyle: { background: '#fff1f2', borderColor: '#e11d48', color: '#9f1239', boxShadow: '0 3px 12px rgba(225,29,72,0.12)' },
                 },
               ].map(({ val, label, icon, activeStyle }) => {
                 const active = overall === val;
@@ -338,15 +338,15 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
                     style={{
                       flex: 1, padding: '12px 16px',
                       borderRadius: 10,
-                      border: `1.5px solid ${active ? activeStyle.borderColor : 'rgba(255,255,255,0.1)'}`,
-                      background: active ? activeStyle.background : '#111c2e',
-                      color: active ? activeStyle.color : 'rgba(255,255,255,0.42)',
+                      border: `1.5px solid ${active ? activeStyle.borderColor : '#e2e8f0'}`,
+                      background: active ? activeStyle.background : 'white',
+                      color: active ? activeStyle.color : '#64748b',
                       cursor: 'pointer',
                       fontFamily: 'Inter, sans-serif',
                       fontSize: 13, fontWeight: 600,
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
                       transition: 'all 0.18s',
-                      boxShadow: active ? activeStyle.boxShadow : 'none',
+                      boxShadow: active ? activeStyle.boxShadow : '0 1px 3px rgba(15,31,61,0.04)',
                       transform: active ? 'scale(1.02)' : 'scale(1)',
                     }}
                   >
@@ -366,7 +366,7 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
                 <div key={i}>
                   {/* Step text */}
                   <div style={{
-                    fontSize: 12.5, color: 'rgba(255,255,255,0.55)', lineHeight: 1.5,
+                    fontSize: 12.5, color: '#475569', lineHeight: 1.5,
                     marginBottom: 7, paddingLeft: 2,
                   }}>
                     <span style={{ fontWeight: 600, color: '#0a9c85', marginRight: 5 }}>{i + 1}.</span>
@@ -375,9 +375,9 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
                   {/* Worked / Didn't work */}
                   <div style={{ display: 'flex', gap: 7 }}>
                     {[
-                      { val: 5, label: 'Worked', activeColor: '#4ecca3', activeBg: 'rgba(10,156,133,0.18)', activeBorder: '#0a9c85' },
-                      { val: 3, label: 'Somewhat', activeColor: '#fcd34d', activeBg: 'rgba(217,119,6,0.15)', activeBorder: '#d97706' },
-                      { val: 1, label: "Didn't work", activeColor: '#fca5a5', activeBg: 'rgba(225,29,72,0.15)', activeBorder: '#e11d48' },
+                      { val: 5, label: 'Worked', activeColor: '#065f52', activeBg: '#e6f5f2', activeBorder: '#0a9c85' },
+                      { val: 3, label: 'Somewhat', activeColor: '#92400e', activeBg: '#fffbeb', activeBorder: '#d97706' },
+                      { val: 1, label: "Didn't work", activeColor: '#9f1239', activeBg: '#fff1f2', activeBorder: '#e11d48' },
                     ].map(({ val, label, activeColor, activeBg, activeBorder }) => {
                       const active = ratings[action] === val;
                       return (
@@ -388,9 +388,9 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
                             flex: 1,
                             padding: '7px 4px',
                             borderRadius: 8,
-                            border: `1.5px solid ${active ? activeBorder : 'rgba(255,255,255,0.09)'}`,
-                            background: active ? activeBg : '#111c2e',
-                            color: active ? activeColor : 'rgba(255,255,255,0.35)',
+                            border: `1.5px solid ${active ? activeBorder : '#e2e8f0'}`,
+                            background: active ? activeBg : '#f8fafc',
+                            color: active ? activeColor : '#94a3b8',
                             cursor: 'pointer',
                             fontFamily: 'Inter, sans-serif',
                             fontSize: 11, fontWeight: 600,
@@ -414,9 +414,9 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
               style={{
                 width: '100%', padding: '13px 28px',
                 background: overall === null
-                  ? 'rgba(255,255,255,0.07)'
+                  ? '#f1f5f9'
                   : 'linear-gradient(135deg, #0a9c85, #087a65)',
-                color: overall === null ? 'rgba(255,255,255,0.3)' : 'white',
+                color: overall === null ? '#94a3b8' : 'white',
                 border: 'none', borderRadius: 10,
                 fontSize: 14, fontWeight: 600,
                 cursor: overall === null ? 'not-allowed' : 'pointer',

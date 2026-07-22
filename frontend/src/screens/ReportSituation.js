@@ -14,30 +14,30 @@ const SEVERITY_OPTIONS = [
     label: 'Low',
     iconColor: '#0a9c85',
     desc: 'Early signs',
-    activeBg: 'rgba(10,156,133,0.16)',
+    activeBg: '#e6f5f2',
     activeBorder: '#0a9c85',
-    activeColor: '#4ecca3',
-    activeShadow: 'rgba(10,156,133,0.25)',
+    activeColor: '#065f52',
+    activeShadow: 'rgba(10,156,133,0.2)',
   },
   {
     id: 'medium',
     label: 'Medium',
     iconColor: '#d97706',
     desc: 'Escalating',
-    activeBg: 'rgba(217,119,6,0.15)',
+    activeBg: '#fffbeb',
     activeBorder: '#d97706',
-    activeColor: '#fcd34d',
-    activeShadow: 'rgba(217,119,6,0.25)',
+    activeColor: '#92400e',
+    activeShadow: 'rgba(217,119,6,0.2)',
   },
   {
     id: 'high',
     label: 'High',
     iconColor: '#e11d48',
     desc: 'Crisis',
-    activeBg: 'rgba(225,29,72,0.15)',
+    activeBg: '#fff1f2',
     activeBorder: '#e11d48',
-    activeColor: '#fca5a5',
-    activeShadow: 'rgba(225,29,72,0.25)',
+    activeColor: '#9f1239',
+    activeShadow: 'rgba(225,29,72,0.2)',
   },
 ];
 
@@ -236,8 +236,8 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
                     style={{
                       padding: '14px 6px 12px',
                       borderRadius: 14,
-                      border: `2px solid ${active ? s.activeBorder : 'rgba(255,255,255,0.09)'}`,
-                      background: active ? s.activeBg : '#111c2e',
+                      border: `2px solid ${active ? s.activeBorder : '#e2e8f0'}`,
+                      background: active ? s.activeBg : 'white',
                       cursor: 'pointer',
                       textAlign: 'center',
                       fontFamily: 'Inter, sans-serif',
@@ -258,7 +258,7 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
                     </div>
                     <div style={{
                       fontWeight: 700, fontSize: 13, letterSpacing: '-0.1px',
-                      color: active ? s.activeColor : 'rgba(255,255,255,0.75)',
+                      color: active ? s.activeColor : '#334155',
                     }}>
                       {s.label}
                     </div>
@@ -282,11 +282,11 @@ export default function ReportSituation({ selectedUser, navigate, setLastRespons
               style={{
                 width: '100%', padding: '12px',
                 background: 'transparent',
-                border: '1.5px dashed rgba(255,255,255,0.18)',
+                border: '1.5px dashed #cbd5e1',
                 borderRadius: 10, cursor: 'pointer',
                 fontFamily: 'Inter, sans-serif',
                 fontSize: 13, fontWeight: 500,
-                color: 'rgba(255,255,255,0.42)',
+                color: '#64748b',
                 marginTop: 4, marginBottom: 6,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                 transition: 'all 0.15s',

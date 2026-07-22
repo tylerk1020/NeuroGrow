@@ -4,55 +4,55 @@
    DESIGN TOKENS
    ------------------------- */
 :root {
-  --bg: #07091a;
-  --bg-warm: #07091a;
-  --surface: #0d1b30;
-  --surface-raised: #0f2040;
-  --border: rgba(255,255,255,0.09);
-  --border-strong: rgba(255,255,255,0.16);
+  --bg: #f0f4f8;
+  --bg-warm: #fafafa;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
 
   --navy: #0f1f3d;
   --navy-mid: #1a3260;
-  --navy-light: rgba(255,255,255,0.05);
+  --navy-light: #e8edf5;
 
   --teal: #0a9c85;
   --teal-mid: #0b8a75;
   --teal-dark: #087a65;
-  --teal-light: rgba(10,156,133,0.14);
-  --teal-text: #4ecca3;
+  --teal-light: #e6f5f2;
+  --teal-text: #065f52;
 
-  --blue: #3b82f6;
-  --blue-light: rgba(59,130,246,0.14);
-  --blue-text: #93c5fd;
+  --blue: #2563eb;
+  --blue-light: #eff4ff;
+  --blue-text: #1e40af;
 
-  --amber: #f59e0b;
-  --amber-light: rgba(217,119,6,0.12);
-  --amber-border: rgba(217,119,6,0.28);
+  --amber: #b45309;
+  --amber-light: #fef9ec;
+  --amber-border: #fcd34d;
 
-  --red: #f87171;
-  --red-light: rgba(185,28,28,0.15);
-  --red-border: rgba(225,29,72,0.28);
-  --red-text: #fca5a5;
+  --red: #c53030;
+  --red-light: #fff5f5;
+  --red-border: #feb2b2;
+  --red-text: #9b2c2c;
 
-  --gray-50: #111c2e;
-  --gray-100: rgba(255,255,255,0.05);
-  --gray-200: rgba(255,255,255,0.09);
-  --gray-400: rgba(255,255,255,0.38);
-  --gray-500: rgba(255,255,255,0.48);
-  --gray-600: rgba(255,255,255,0.6);
-  --gray-700: rgba(255,255,255,0.72);
-  --gray-800: rgba(255,255,255,0.85);
-  --gray-900: #ffffff;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
 
   --radius-sm: 8px;
   --radius: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
 
-  --shadow-sm: 0 1px 0 rgba(255,255,255,0.03), 0 4px 16px rgba(0,0,0,0.22);
-  --shadow: 0 4px 20px rgba(0,0,0,0.32), 0 1px 4px rgba(0,0,0,0.15);
-  --shadow-lg: 0 12px 44px rgba(0,0,0,0.42), 0 4px 16px rgba(0,0,0,0.2);
-  --shadow-teal: 0 4px 16px rgba(10,156,133,0.25);
+  --shadow-sm: 0 1px 3px rgba(15,31,61,0.05), 0 4px 12px rgba(15,31,61,0.06);
+  --shadow: 0 4px 16px rgba(15,31,61,0.08), 0 1px 4px rgba(15,31,61,0.04);
+  --shadow-lg: 0 12px 40px rgba(15,31,61,0.12), 0 4px 12px rgba(15,31,61,0.06);
+  --shadow-teal: 0 4px 16px rgba(10,156,133,0.2);
 
   --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Lora', Georgia, serif;
@@ -76,8 +76,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
   background-image:
-    radial-gradient(ellipse at 70% -5%, rgba(0,212,180,0.055) 0%, transparent 45%),
-    radial-gradient(ellipse at 0% 90%, rgba(139,92,246,0.045) 0%, transparent 42%);
+    radial-gradient(ellipse at 65% 0%, rgba(10,156,133,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 0% 85%, rgba(37,99,235,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 60%, rgba(15,31,61,0.03) 0%, transparent 40%);
   background-attachment: fixed;
 }
 
@@ -167,7 +168,7 @@ body {
   background: var(--surface);
   border-radius: var(--radius-lg);
   padding: 24px;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.28);
+  box-shadow: 0 1px 3px rgba(15,31,61,0.05), 0 4px 16px rgba(15,31,61,0.07);
   border: 1px solid var(--border);
   margin-bottom: 14px;
   transition: var(--transition-slow);
@@ -531,13 +532,13 @@ body {
    CAREGIVER NOTE
    ------------------------- */
 .caregiver-note {
-  background: linear-gradient(135deg, rgba(10,156,133,0.10) 0%, rgba(10,156,133,0.05) 100%);
+  background: linear-gradient(135deg, var(--teal-light) 0%, #f0fbf9 100%);
   border: 1px solid rgba(10,156,133,0.2);
   border-left: 3px solid var(--teal);
   border-radius: var(--radius);
   padding: 16px 18px;
   font-size: 14px;
-  color: rgba(255,255,255,0.7);
+  color: var(--teal-text);
   line-height: 1.7;
   font-style: italic;
   font-family: var(--font-serif);
