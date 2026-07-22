@@ -115,7 +115,29 @@ export default function ViewResponse({ response, selectedUser, navigate }) {
       )}
 
       {/* Immediate actions */}
-      <div className="card">
+      <div className="card" style={{ paddingTop: response.priority === 'high' ? 0 : 24, overflow: 'hidden' }}>
+        {/* Priority banner — only for high */}
+        {response.priority === 'high' && (
+          <div style={{
+            background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
+            margin: '-1px -1px 20px',
+            padding: '11px 20px',
+            display: 'flex', alignItems: 'center', gap: 8,
+          }}>
+            <div style={{
+              width: 8, height: 8, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.7)',
+              animation: 'pulse 1.5s ease-in-out infinite',
+              flexShrink: 0,
+            }} />
+            <span style={{
+              color: 'white', fontWeight: 700, fontSize: 11,
+              textTransform: 'uppercase', letterSpacing: '1px',
+            }}>
+              High Priority — Act Now
+            </span>
+          </div>
+        )}
         <div className="section-label" style={{ marginTop: 0 }}>Immediate Actions</div>
         <ul className="actions-list">
           {response.immediate_actions?.map((action, i) => (

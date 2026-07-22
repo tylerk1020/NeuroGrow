@@ -5,6 +5,16 @@ export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Pull caregiver name from localStorage
+  const caregiverFirst = (() => {
+    try {
+      const saved = localStorage.getItem('ng_caregiver');
+      if (!saved) return null;
+      const name = JSON.parse(saved)?.full_name || '';
+      return name.split(' ')[0] || null;
+    } catch { return null; }
+  })();
+
   useEffect(() => {
     const token = localStorage.getItem('ng_token');
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -13,7 +23,6 @@ export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
       .then(data => {
         const list = data.users || [];
         setUsers(list);
-        // Auto-select if there's only one profile
         if (list.length === 1 && !selectedUser) setSelectedUser(list[0]);
         setLoading(false);
       })
@@ -24,83 +33,196 @@ export default function Dashboard({ selectedUser, setSelectedUser, navigate }) {
 
   return (
     <div>
-      {/* Welcome card */}
-      <div className="card">
-        <div className="card-title">
-          {selectedUser ? `${firstName}'s Dashboard` : 'Welcome to NeuroGrow'}
+
+      {/* Greeting */}
+      <div style={{ marginBottom: 22 }}>
+        <div style={{
+          fontSize: 26,
+          fontWeight: 700,
+          color: 'var(--gray-900)',
+          letterSpacing: '-0.5px',
+          marginBottom: 3,
+          fontFamily: 'var(--font-serif)',
+          lineHeight: 1.2,
+        }}>
+          {caregiverFirst ? `Hi, ${caregiverFirst}` : 'Welcome back'}
         </div>
-        <div className="card-subtitle">
+        <div style={{ fontSize: 14, color: 'var(--gray-500)' }}>
           {selectedUser
-            ? `Personalized AI support ready for ${firstName}. Select an action below.`
-            : 'Select a profile below or create a new one to get started.'
-          }
+            ? `${firstName}'s profile is active.`
+            : 'Select a profile to get personalized support.'}
         </div>
-        <button className="btn btn-teal btn-full" onClick={() => navigate('create-profile')}>
-          Add New Profile
-        </button>
       </div>
 
-      {/* Profile list */}
-      {loading ? (
-        <div className="loading-wrap">
-          <div className="spinner" />
-          <div className="loading-text">Loading profiles...</div>
-        </div>
-      ) : users.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '40px 24px' }}>
-          <div className="empty-icon-ring" style={{ marginBottom: 14 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
+      {/* Active profile + CTA hero card */}
+      {selectedUser ? (
+        <div style={{
+          background: 'linear-gradient(135deg, #0f1f3d 0%, #1a3464 100%)',
+          borderRadius: 20,
+          padding: '22px 22px 22px',
+          marginBottom: 14,
+          boxShadow: '0 10px 40px rgba(15,31,61,0.22)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          {/* Background decoration */}
+          <div style={{
+            position: 'absolute', right: -30, top: -30,
+            width: 140, height: 140, borderRadius: '50%',
+            background: 'rgba(10,156,133,0.1)',
+            pointerEvents: 'none',
+          }} />
+          <div style={{
+            position: 'absolute', right: 40, bottom: -40,
+            width: 90, height: 90, borderRadius: '50%',
+            background: 'rgba(37,99,235,0.08)',
+            pointerEvents: 'none',
+          }} />
+
+          {/* Profile row */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 11,
+            marginBottom: 18, position: 'relative',
+          }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: '50%',
+              background: 'linear-gradient(135deg, var(--teal), var(--teal-dark))',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'white', fontWeight: 700, fontSize: 16,
+              flexShrink: 0,
+              boxShadow: '0 2px 10px rgba(10,156,133,0.45)',
+            }}>
+              {firstName[0]}
+            </div>
+            <div>
+              <div style={{ color: 'white', fontWeight: 600, fontSize: 15, lineHeight: 1.2 }}>
+                {selectedUser.name}
+              </div>
+              <div style={{
+                color: 'rgba(255,255,255,0.45)', fontSize: 12, marginTop: 1,
+              }}>
+                {selectedUser.disorder}
+              </div>
+            </div>
+            <div style={{
+              marginLeft: 'auto',
+              display: 'flex', alignItems: 'center', gap: 5,
+              cursor: 'pointer', padding: '5px 10px',
+              borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)',
+              background: 'rgba(255,255,255,0.05)',
+            }}
+              onClick={() => navigate('edit-profile')}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11, fontWeight: 500 }}>Edit</span>
+            </div>
           </div>
-          <div className="empty-title">No profiles yet</div>
-          <div className="empty-text" style={{ marginBottom: 20 }}>
-            Create a profile for the person you support to get personalized AI guidance during difficult moments.
-          </div>
-          <button className="btn btn-primary" onClick={() => navigate('create-profile')}>
-            Create First Profile
+
+          {/* Main CTA */}
+          <button
+            className="btn btn-teal btn-full"
+            onClick={() => navigate('report')}
+            style={{
+              fontSize: 16, fontWeight: 700, letterSpacing: '-0.2px',
+              padding: '15px 28px', position: 'relative',
+              boxShadow: '0 4px 20px rgba(10,156,133,0.5)',
+            }}
+          >
+            Get Support Now
           </button>
         </div>
-      ) : (
-        <div>
-          <div className="section-label">Profiles</div>
-          {users.map(user => (
-            <div
-              key={user.id}
-              className={`user-card ${selectedUser?.id === user.id ? 'selected' : ''}`}
-              onClick={() => setSelectedUser(user)}
-            >
-              <div className="user-avatar">{user.name[0]}</div>
-              <div className="user-info">
-                <div className="user-name">{user.name}</div>
-                <div className="user-disorder">{user.disorder}</div>
-              </div>
-              {selectedUser?.id === user.id && (
-                <div className="user-check">✓</div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      ) : null}
 
-      {/* Actions for selected profile */}
-      {selectedUser && (
-        <div style={{ marginTop: 6 }}>
-          <div className="section-label">Actions for {firstName}</div>
-          <div className="action-buttons">
-            <button className="btn btn-primary btn-full btn-lg" onClick={() => navigate('report')}>
-              Get Support Now
-            </button>
-            <button className="btn btn-outline btn-full" onClick={() => navigate('history')}>
-              View Session History
-            </button>
-            <button className="btn btn-outline btn-full" onClick={() => navigate('edit-profile')}>
-              Edit {firstName}'s Profile
+      {/* Profile list card */}
+      <div className="card">
+        <div style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          marginBottom: 14,
+        }}>
+          <div style={{
+            fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '0.8px', color: 'var(--gray-400)',
+          }}>
+            {users.length > 0 ? 'Profiles' : 'Get Started'}
+          </div>
+          <button
+            onClick={() => navigate('create-profile')}
+            style={{
+              background: 'var(--teal-light)', border: 'none', cursor: 'pointer',
+              fontSize: 12, fontWeight: 600, color: 'var(--teal-text)',
+              padding: '5px 12px', borderRadius: 8, fontFamily: 'var(--font)',
+            }}
+          >
+            + Add Profile
+          </button>
+        </div>
+
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}>
+            <div className="spinner" style={{ width: 26, height: 26, borderWidth: 2 }} />
+          </div>
+        ) : users.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '16px 0 8px' }}>
+            <div className="empty-icon-ring" style={{ marginBottom: 10 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div className="empty-title">No profiles yet</div>
+            <div className="empty-text" style={{ marginBottom: 16 }}>
+              Create a profile for the person you support to get personalized AI guidance.
+            </div>
+            <button className="btn btn-primary" onClick={() => navigate('create-profile')}>
+              Create First Profile
             </button>
           </div>
-        </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {users.map(user => (
+              <div
+                key={user.id}
+                className={`user-card ${selectedUser?.id === user.id ? 'selected' : ''}`}
+                onClick={() => setSelectedUser(user)}
+                style={{ marginBottom: 0 }}
+              >
+                <div className="user-avatar">{user.name[0]}</div>
+                <div className="user-info">
+                  <div className="user-name">{user.name}</div>
+                  <div className="user-disorder">{user.disorder}</div>
+                </div>
+                {selectedUser?.id === user.id ? (
+                  <div className="user-check">✓</div>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" strokeWidth="2">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Secondary actions */}
+      {selectedUser && (
+        <button
+          className="btn btn-outline btn-full"
+          onClick={() => navigate('history')}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="1"/>
+            <path d="M9 12h6M9 16h4"/>
+          </svg>
+          View Session History
+        </button>
       )}
+
     </div>
   );
 }

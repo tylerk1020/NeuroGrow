@@ -57,25 +57,25 @@ export default function Landing({ navigate }) {
           </div>
 
           <h1 style={{
-            fontSize: 32,
-            fontWeight: 700,
+            fontSize: 34,
+            fontWeight: 800,
             color: '#0f1f3d',
-            lineHeight: 1.25,
-            letterSpacing: '-0.5px',
+            lineHeight: 1.2,
+            letterSpacing: '-0.8px',
             marginBottom: 16,
           }}>
-            Real-time AI support<br />during the hardest moments
+            Support built around<br />your loved one — not a<br />generic checklist
           </h1>
 
           <p style={{
-            fontSize: 16,
+            fontSize: 15.5,
             color: '#475569',
-            lineHeight: 1.7,
+            lineHeight: 1.75,
             marginBottom: 32,
-            maxWidth: 460,
+            maxWidth: 420,
             margin: '0 auto 32px',
           }}>
-            Describe a meltdown or crisis as it's happening. Get immediate, personalized strategies — tailored to your loved one's triggers, communication style, and what actually works for them.
+            Describe a meltdown as it's happening. NeuroGrow generates immediate, step-by-step guidance using your loved one's specific triggers, comfort items, and what's worked before.
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 280, margin: '0 auto' }}>
@@ -133,6 +133,72 @@ export default function Landing({ navigate }) {
                 {label}
               </span>
             ))}
+          </div>
+        </div>
+
+        {/* Demo response preview */}
+        <div style={{
+          background: 'white',
+          borderRadius: 16,
+          border: '1px solid #e2e8f0',
+          padding: '20px 20px 16px',
+          marginBottom: 20,
+          boxShadow: '0 8px 32px rgba(15,31,61,0.10)',
+          overflow: 'hidden',
+        }}>
+          <div style={{
+            fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '1px', color: '#94a3b8', marginBottom: 14,
+          }}>
+            Example response — generated in seconds
+          </div>
+
+          {/* Priority badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '4px 10px', borderRadius: 20,
+            background: '#fff5f5', color: '#9b2c2c',
+            border: '1px solid #feb2b2',
+            fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '0.8px', marginBottom: 12,
+          }}>
+            <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#c53030', flexShrink: 0 }} />
+            High Priority
+          </div>
+
+          {/* Sample steps */}
+          {[
+            'Move Audrey to the quiet room now — the alarm is still active.',
+            'Offer Ellie the elephant as soon as you reach the quiet space.',
+            'Dim the lights and sit on the floor at her level — no eye contact yet.',
+          ].map((step, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'flex-start', gap: 10,
+              padding: '9px 12px', marginBottom: 6,
+              background: '#f8fafc', borderRadius: 10,
+              border: '1px solid #e2e8f0',
+              fontSize: 12.5, color: '#334155', lineHeight: 1.55,
+            }}>
+              <div style={{
+                minWidth: 22, height: 22, flexShrink: 0,
+                background: 'linear-gradient(135deg, #0a9c85, #087a65)',
+                borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'white', fontSize: 10, fontWeight: 700,
+                boxShadow: '0 2px 6px rgba(10,156,133,0.3)',
+              }}>{i + 1}</div>
+              {step}
+            </div>
+          ))}
+
+          {/* Caregiver note */}
+          <div style={{
+            marginTop: 10, padding: '10px 14px',
+            background: 'linear-gradient(135deg, #e6f5f2, #f0fbf9)',
+            borderLeft: '3px solid #0a9c85', borderRadius: 8,
+            fontSize: 12, color: '#065f52', fontStyle: 'italic', lineHeight: 1.6,
+          }}>
+            You already have Ellie with you — that's exactly the right call. Get to the quiet room first.
           </div>
         </div>
 
