@@ -1159,3 +1159,57 @@ body {
   0%, 100% { box-shadow: 0 0 0 1px rgba(0,212,180,0.15), 0 0 30px rgba(0,212,180,0.06), 0 12px 48px rgba(0,0,0,0.3); }
   50%       { box-shadow: 0 0 0 1px rgba(0,212,180,0.28), 0 0 48px rgba(0,212,180,0.12), 0 12px 48px rgba(0,0,0,0.3); }
 }
+
+/* -------------------------
+   SCROLL REVEAL
+   (IntersectionObserver adds .is-visible)
+   ------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* -------------------------
+   HERO ENTRY ANIMATIONS
+   Staggered fade-in for hero elements on load
+   ------------------------- */
+@keyframes hero-entry {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-badge-anim    { animation: hero-entry 0.6s cubic-bezier(0.4,0,0.2,1) 0.10s both; }
+.hero-headline-anim { animation: hero-entry 0.7s cubic-bezier(0.4,0,0.2,1) 0.24s both; }
+.hero-sub-anim      { animation: hero-entry 0.6s cubic-bezier(0.4,0,0.2,1) 0.40s both; }
+.hero-desc-anim     { animation: hero-entry 0.6s cubic-bezier(0.4,0,0.2,1) 0.52s both; }
+.hero-cta-anim      { animation: hero-entry 0.6s cubic-bezier(0.4,0,0.2,1) 0.62s both; }
+.hero-pills-anim    { animation: hero-entry 0.6s cubic-bezier(0.4,0,0.2,1) 0.76s both; }
+
+/* -------------------------
+   LANDING NAV LINKS
+   ------------------------- */
+.landing-nav-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.42);
+  padding: 7px 11px;
+  border-radius: 6px;
+  transition: color 0.18s, background 0.18s;
+  letter-spacing: 0;
+}
+
+.landing-nav-link:hover {
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.05);
+}
