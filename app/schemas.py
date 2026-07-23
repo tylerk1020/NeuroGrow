@@ -15,6 +15,7 @@ class CaregiverResponse(BaseModel):
     id: int
     email: str
     full_name: str
+    email_verified: bool = False
 
     class Config:
         from_attributes = True
@@ -27,6 +28,10 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str
     caregiver: CaregiverResponse
+
+class RegisterResponse(BaseModel):
+    message: str
+    email: str
 
 
 # -------------------------

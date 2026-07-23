@@ -11,3 +11,6 @@ bcrypt==3.2.2
 
 # PostgreSQL (comment this out if staying on SQLite for now)
 psycopg2-binary
+
+# Email (verification emails via Resend)
+resend
