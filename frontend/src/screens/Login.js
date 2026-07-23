@@ -50,7 +50,8 @@ export default function Login({ onLogin, resetToken }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: form.email, password: '' }),
         });
-        await res.json();
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Something went wrong.');
         setSuccess('If that email exists, a reset link is on its way. Check your inbox.');
       } catch (e) { setError('Something went wrong. Try again.'); }
       setLoading(false);
