@@ -8,6 +8,7 @@ import Login from './screens/Login';
 import Landing from './screens/Landing';
 import Manifesto from './screens/Manifesto';
 import BrainLogo from './components/BrainLogo';
+import API from './config';
 import './App.css';
 
 export default function App() {
@@ -15,9 +16,43 @@ export default function App() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [lastResponse, setLastResponse] = useState(null);
   const [caregiver, setCaregiver] = useState(null);
+  const [resetToken, setResetToken] = useState(null);
 
-  // On app load, check if the user is already logged in (token in localStorage)
+  // On app load: handle ?verify=TOKEN from email link, then check existing session
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const verifyToken = params.get('verify');
+    const pwResetToken = params.get('reset');
+
+    if (pwResetToken) {
+      window.history.replaceState({}, '', '/');
+      setResetToken(pwResetToken);
+      setScreen('login');
+      return;
+    }
+
+    if (verifyToken) {
+      // Clean the URL so the token doesn't sit in the address bar
+      window.history.replaceState({}, '', '/');
+      setScreen('verifying');
+      fetch(`${API}/auth/verify-email?token=${verifyToken}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.access_token) {
+            localStorage.setItem('ng_token', data.access_token);
+            localStorage.setItem('ng_caregiver', JSON.stringify(data.caregiver));
+            setCaregiver(data.caregiver);
+            setScreen('dashboard');
+          } else {
+            // Token invalid — go to landing and let them try logging in
+            setScreen('landing');
+          }
+        })
+        .catch(() => setScreen('landing'));
+      return;
+    }
+
+    // No verify token — check if already logged in
     const token = localStorage.getItem('ng_token');
     const saved = localStorage.getItem('ng_caregiver');
     if (token && saved) {
@@ -25,7 +60,6 @@ export default function App() {
         setCaregiver(JSON.parse(saved));
         setScreen('dashboard');
       } catch (e) {
-        // Corrupted data — clear it
         localStorage.removeItem('ng_token');
         localStorage.removeItem('ng_caregiver');
       }
@@ -47,6 +81,22 @@ export default function App() {
     setScreen('landing');
   };
 
+  // Email verification in progress (arrived via ?verify=TOKEN link)
+  if (screen === 'verifying') {
+    return (
+      <div style={{
+        minHeight: '100vh', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        background: '#07091a', gap: 16,
+      }}>
+        <BrainLogo size={40} color="white" />
+        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, fontFamily: 'Inter, sans-serif' }}>
+          Verifying your email…
+        </div>
+      </div>
+    );
+  }
+
   // Show landing page for new visitors
   if (screen === 'landing') {
     return <Landing navigate={navigate} />;
@@ -59,7 +109,7 @@ export default function App() {
 
   // Show login screen if not logged in
   if (!caregiver && screen === 'login') {
-    return <Login onLogin={handleLogin} />;
+    return <Login onLogin={handleLogin} resetToken={resetToken} />;
   }
 
   return (

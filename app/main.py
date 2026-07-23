@@ -4,11 +4,14 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from app import models
 from app.database import engine, get_db, SessionLocal
+import secrets
+from datetime import datetime, timedelta
+
 from app.schemas import (
     UserCreate, UserUpdate, UserResponse,
     SituationInput, SituationResponse,
     FeedbackInput, FeedbackResponse,
-    CaregiverCreate, CaregiverResponse, LoginInput, TokenResponse
+    CaregiverCreate, CaregiverResponse, LoginInput, TokenResponse, RegisterResponse
 )
 from app.llm import get_llm_response, synthesize_learned_patterns
 
@@ -89,6 +92,124 @@ from app.auth import (
     get_current_caregiver, require_caregiver
 )
 
+
+# -------------------------
+# EMAIL — Verification emails via Resend (resend.com)
+# Set RESEND_API_KEY in your .env and Render environment variables.
+# Until neurovero.com is verified in Resend, use onboarding@resend.dev as the from address.
+# -------------------------
+def send_verification_email(to_email: str, name: str, token: str):
+    try:
+        import resend
+        api_key = _os.getenv("RESEND_API_KEY", "")
+        if not api_key:
+            print("⚠️  RESEND_API_KEY not set — skipping verification email")
+            return
+        resend.api_key = api_key
+
+        verify_url = f"https://neurovero.com/?verify={token}"
+        first_name = name.split()[0] if name else "there"
+
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <body style="margin:0;padding:0;background:#f4f6f9;font-family:Inter,-apple-system,sans-serif">
+          <div style="max-width:520px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+            <div style="background:#07091a;padding:32px 40px;text-align:center">
+              <div style="color:white;font-size:20px;font-weight:700;letter-spacing:-0.3px">NeuroVero</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:13px;margin-top:4px">Real-time AI support for caregivers</div>
+            </div>
+            <div style="padding:40px">
+              <h2 style="margin:0 0 12px;font-size:22px;color:#0f1f3d;font-weight:700">Hi {first_name}, verify your email</h2>
+              <p style="color:#475569;font-size:15px;line-height:1.7;margin:0 0 28px">
+                Thanks for joining NeuroVero. Click the button below to verify your email address and activate your account.
+              </p>
+              <div style="text-align:center;margin-bottom:28px">
+                <a href="{verify_url}"
+                   style="display:inline-block;background:#0a9c85;color:white;text-decoration:none;padding:14px 36px;border-radius:10px;font-weight:600;font-size:15px">
+                  Verify my email
+                </a>
+              </div>
+              <p style="color:#94a3b8;font-size:13px;line-height:1.6;margin:0">
+                Or copy this link into your browser:<br>
+                <span style="color:#0a9c85;word-break:break-all">{verify_url}</span>
+              </p>
+            </div>
+            <div style="background:#f8fafc;padding:20px 40px;text-align:center;border-top:1px solid #e2e8f0">
+              <div style="color:#cbd5e1;font-size:12px">
+                If you didn't create a NeuroVero account, you can safely ignore this email.
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+        """
+
+        resend.Emails.send({
+            "from": "NeuroVero <noreply@neurovero.com>",
+            "to": [to_email],
+            "subject": "Verify your NeuroVero account",
+            "html": html,
+        })
+        print(f"✅ Verification email sent to {to_email}")
+    except Exception as e:
+        print(f"⚠️  Email send failed: {e}")
+
+
+def send_reset_email(to_email: str, name: str, token: str):
+    try:
+        import resend
+        api_key = _os.getenv("RESEND_API_KEY", "")
+        if not api_key:
+            print("⚠️  RESEND_API_KEY not set — skipping reset email")
+            return
+        resend.api_key = api_key
+
+        reset_url = f"https://neurovero.com/?reset={token}"
+        first_name = name.split()[0] if name else "there"
+
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <body style="margin:0;padding:0;background:#f4f6f9;font-family:Inter,-apple-system,sans-serif">
+          <div style="max-width:520px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+            <div style="background:#07091a;padding:32px 40px;text-align:center">
+              <div style="color:white;font-size:20px;font-weight:700;letter-spacing:-0.3px">NeuroVero</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:13px;margin-top:4px">Real-time AI support for caregivers</div>
+            </div>
+            <div style="padding:40px">
+              <h2 style="margin:0 0 12px;font-size:22px;color:#0f1f3d;font-weight:700">Reset your password</h2>
+              <p style="color:#475569;font-size:15px;line-height:1.7;margin:0 0 28px">
+                Hi {first_name}, we received a request to reset your NeuroVero password. Click the button below — this link expires in 1 hour.
+              </p>
+              <div style="text-align:center;margin-bottom:28px">
+                <a href="{reset_url}"
+                   style="display:inline-block;background:#0a9c85;color:white;text-decoration:none;padding:14px 36px;border-radius:10px;font-weight:600;font-size:15px">
+                  Reset my password
+                </a>
+              </div>
+              <p style="color:#94a3b8;font-size:13px;line-height:1.6;margin:0">
+                If you didn't request this, you can safely ignore this email — your password won't change.
+              </p>
+            </div>
+            <div style="background:#f8fafc;padding:20px 40px;text-align:center;border-top:1px solid #e2e8f0">
+              <div style="color:#cbd5e1;font-size:12px">NeuroVero · neurovero.com</div>
+            </div>
+          </div>
+        </body>
+        </html>
+        """
+
+        resend.Emails.send({
+            "from": "NeuroVero <noreply@neurovero.com>",
+            "to": [to_email],
+            "subject": "Reset your NeuroVero password",
+            "html": html,
+        })
+        print(f"✅ Password reset email sent to {to_email}")
+    except Exception as e:
+        print(f"⚠️  Reset email send failed: {e}")
+
 # Create all database tables automatically on startup
 models.Base.metadata.create_all(bind=engine)
 
@@ -121,9 +242,9 @@ def read_root():
 # AUTH ENDPOINTS
 # =====================================
 
-@app.post("/auth/register", response_model=TokenResponse)
+@app.post("/auth/register", response_model=RegisterResponse)
 def register(data: CaregiverCreate, db: Session = Depends(get_db)):
-    """Create a new caregiver account. Returns a JWT token immediately."""
+    """Create a new caregiver account. Sends a verification email — account is inactive until verified."""
     existing = db.query(models.Caregiver).filter(
         models.Caregiver.email == data.email.lower()
     ).first()
@@ -138,17 +259,22 @@ def register(data: CaregiverCreate, db: Session = Depends(get_db)):
             detail="Password must be at least 8 characters."
         )
 
+    verification_token = secrets.token_urlsafe(32)
+
     caregiver = models.Caregiver(
         email=data.email.lower().strip(),
         full_name=data.full_name.strip(),
-        hashed_password=hash_password(data.password)
+        hashed_password=hash_password(data.password),
+        email_verified=False,
+        verification_token=verification_token,
     )
     db.add(caregiver)
     db.commit()
     db.refresh(caregiver)
 
-    token = create_access_token(caregiver.email)
-    return {"access_token": token, "token_type": "bearer", "caregiver": caregiver}
+    send_verification_email(caregiver.email, caregiver.full_name, verification_token)
+
+    return {"message": "Account created! Please check your email to verify your account.", "email": caregiver.email}
 
 
 @app.post("/auth/login", response_model=TokenResponse)
@@ -164,8 +290,107 @@ def login(data: LoginInput, db: Session = Depends(get_db)):
             detail="Incorrect email or password."
         )
 
+    if not caregiver.email_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Please verify your email before logging in. Check your inbox for the verification link."
+        )
+
     token = create_access_token(caregiver.email)
     return {"access_token": token, "token_type": "bearer", "caregiver": caregiver}
+
+
+@app.get("/auth/verify-email", response_model=TokenResponse)
+def verify_email(token: str, db: Session = Depends(get_db)):
+    """Verify a caregiver's email using the token from the verification link."""
+    caregiver = db.query(models.Caregiver).filter(
+        models.Caregiver.verification_token == token
+    ).first()
+
+    if not caregiver:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or expired verification link. Please register again or contact support."
+        )
+
+    caregiver.email_verified = True
+    caregiver.verification_token = None
+    db.commit()
+    db.refresh(caregiver)
+
+    access_token = create_access_token(caregiver.email)
+    return {"access_token": access_token, "token_type": "bearer", "caregiver": caregiver}
+
+
+@app.post("/auth/resend-verification")
+def resend_verification(data: LoginInput, db: Session = Depends(get_db)):
+    """Resend a verification email. Requires correct email + password to prevent abuse."""
+    caregiver = db.query(models.Caregiver).filter(
+        models.Caregiver.email == data.email.lower().strip()
+    ).first()
+
+    if not caregiver or not verify_password(data.password, caregiver.hashed_password):
+        raise HTTPException(status_code=401, detail="Incorrect email or password.")
+
+    if caregiver.email_verified:
+        raise HTTPException(status_code=400, detail="This email is already verified.")
+
+    # Generate a fresh token
+    new_token = secrets.token_urlsafe(32)
+    caregiver.verification_token = new_token
+    db.commit()
+
+    send_verification_email(caregiver.email, caregiver.full_name, new_token)
+    return {"message": "Verification email resent. Please check your inbox."}
+
+
+@app.post("/auth/forgot-password")
+def forgot_password(data: LoginInput, db: Session = Depends(get_db)):
+    """Send a password reset email. Accepts any email — always returns 200 to prevent user enumeration."""
+    caregiver = db.query(models.Caregiver).filter(
+        models.Caregiver.email == data.email.lower().strip()
+    ).first()
+
+    if caregiver:
+        reset_token = secrets.token_urlsafe(32)
+        caregiver.reset_token = reset_token
+        caregiver.reset_token_expires = datetime.utcnow() + timedelta(hours=1)
+        db.commit()
+        send_reset_email(caregiver.email, caregiver.full_name, reset_token)
+
+    # Always return 200 — don't reveal whether the email exists
+    return {"message": "If an account with that email exists, a reset link has been sent."}
+
+
+@app.post("/auth/reset-password", response_model=TokenResponse)
+def reset_password(data: dict, db: Session = Depends(get_db)):
+    """Reset password using the token from the email link."""
+    token = data.get("token")
+    new_password = data.get("password")
+
+    if not token or not new_password:
+        raise HTTPException(status_code=400, detail="Token and new password are required.")
+    if len(new_password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters.")
+
+    caregiver = db.query(models.Caregiver).filter(
+        models.Caregiver.reset_token == token
+    ).first()
+
+    if not caregiver:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset link.")
+    if caregiver.reset_token_expires < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="This reset link has expired. Please request a new one.")
+
+    caregiver.hashed_password = hash_password(new_password)
+    caregiver.reset_token = None
+    caregiver.reset_token_expires = None
+    caregiver.email_verified = True  # Implicitly verify email if they can receive email
+    db.commit()
+    db.refresh(caregiver)
+
+    access_token = create_access_token(caregiver.email)
+    return {"access_token": access_token, "token_type": "bearer", "caregiver": caregiver}
 
 
 @app.get("/auth/me", response_model=CaregiverResponse)
